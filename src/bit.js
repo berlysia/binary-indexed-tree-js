@@ -19,8 +19,8 @@ class BinaryIndexedTree {
      * @param {number} size
      */
     constructor(size) {
-        this.bit_ = Array(size + 1).fill(0);
-        this.size_ = size;
+        this.bit_ = Array(size).fill(0);
+        this.length_ = size;
     }
 
     /**
@@ -28,7 +28,7 @@ class BinaryIndexedTree {
      * real size of BIT is length + 1
      */
     get length() {
-        return this.size_;
+        return this.length_;
     }
 
     /**
@@ -38,9 +38,8 @@ class BinaryIndexedTree {
      * O(log(N))
      */
     add(idx, val) {
-        if (!checkRange(idx, this.size_)) return false;
-        idx++;
-        for(let x = idx, l = this.bit_.length - 1; x <= l; x += x & -x) {
+        if (!checkRange(idx, this.length_)) return false;
+        for(let x = idx, l = this.bit_.length; x < l; x |= x + 1) {
             this.bit_[x] += val;
         }
         return true;
@@ -52,10 +51,9 @@ class BinaryIndexedTree {
      * O(log(N))
      */
     get(idx) {
-        if (!checkRange(idx, this.size_)) return undefined;
-        idx++;
+        if (!checkRange(idx, this.length_)) return undefined;
         let ans = 0;
-        for(let x = idx; x > 0; x -= x & -x) {
+        for(let x = idx; x >= 0; x = (x & (x + 1)) - 1) {
             ans += this.bit_[x];
         }
         return ans;
@@ -66,7 +64,7 @@ class BinaryIndexedTree {
      * O(log(N))
      */
     sum() {
-        return this.get(this.bit_.length - 2);
+        return this.get(this.length_ - 1);
     }
 
     /**
@@ -80,9 +78,9 @@ class BinaryIndexedTree {
      */
     lowerBound(target, comp, begin, end) {
         begin = begin || 0;
-        end = end || this.size_;
-        if(!checkRange(begin, this.size_ + 1)) throw new Error('out-of-bounds');
-        if(!checkRange(end, this.size_ + 1)) throw new Error('out-of-bounds');
+        end = end || this.length_;
+        if(!checkRange(begin, this.length_ + 1)) throw new Error('out-of-bounds');
+        if(!checkRange(end, this.length_ + 1)) throw new Error('out-of-bounds');
         if(typeof comp !== 'function') comp = _comp;
 
         let mid;
