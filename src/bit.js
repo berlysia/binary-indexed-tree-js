@@ -14,9 +14,10 @@ function BinaryIndexedTree(size) {
     /**
      * @param {number} idx - should be less than size of BIT
      * @param {number} val
+     * @returns {boolean} successfully added or not
      * O(log(N))
      */
-    this.set = function set(idx, val) {
+    this.add = function add(idx, val) {
         if (!checkRange(idx)) return false;
         idx++;
         for(let x = idx, l = bit.length - 1; x <= l; x += x & -x) {

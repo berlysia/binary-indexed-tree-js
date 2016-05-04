@@ -8,7 +8,7 @@ describe('test', function () {
         size = 10;
         bit = new BIT(size);
         for(let i = 0, l = size; i < l; ++i) {
-            bit.set(i, i);
+            bit.add(i, i);
         }
     });
 
@@ -29,7 +29,7 @@ describe('test', function () {
         it('works', function () {
             const bit = new BIT(size);
             const target = 20;
-            [10,0,0,0,10,0,0,0,10,0].forEach((x, i) => bit.set(i, x));
+            [10,0,0,0,10,0,0,0,10,0].forEach((x, i) => bit.add(i, x));
             const lb = bit.lowerBound(target);
             const ub = bit.upperBound(target);
             
@@ -64,20 +64,23 @@ describe('test', function () {
 
             const bit = new BIT(size);
             const target = 20;
-            [10,0,0,0,10,0,0,0,10,0].forEach((x, i) => bit.set(i, x));
-            const lb = bit.lowerBound(target, comp);
-            const ub = bit.upperBound(target, comp);
+            [10,0,0,0,10,0,0,0,10,0].forEach((x, i) => bit.add(i, x));
+            const lb = bit.lowerBound(target);
+            const ub = bit.upperBound(target);
+            const lb_ = bit.lowerBound(target, comp);
+            const ub_ = bit.upperBound(target, comp);
 
             // [10, 10, 10, 10, 20, 20, 20, 20, 30, 30]
             //              lb = 3          ub = 7
 
-            assert(target < bit.get(lb));
-            assert(bit.get(lb - 1) <= target);
+            assert(target < bit.get(lb_));
+            assert(bit.get(lb_ - 1) <= target);
 
-            assert(target <= bit.get(ub));
-            assert(bit.get(ub - 1) < target);
+            assert(target <= bit.get(ub_));
+            assert(bit.get(ub_ - 1) < target);
 
-            assert(ub - lb === 4);
+            assert(ub === lb_);
+            assert(lb === ub_);
         });
     });
 });
