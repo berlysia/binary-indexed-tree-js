@@ -71,7 +71,7 @@ describe('test', function () {
             const ub_ = bit.upperBound(target, comp);
 
             // [10, 10, 10, 10, 20, 20, 20, 20, 30, 30]
-            //              lb = 3          ub = 7
+            //                  ub = 4          lb = 8
 
             assert(target < bit.get(lb_));
             assert(bit.get(lb_ - 1) <= target);
