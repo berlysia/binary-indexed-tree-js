@@ -1,14 +1,34 @@
 "use strict";
 const assert = require('assert');
 
-/**
- * @param {number} size
- */
-function BinaryIndexedTree(size) {
-    const bit = Array(size + 1).fill(0);
+function _comp(a, b) {
+    return a < b;
+}
 
-    function checkRange(x) {
-        return 0 <= x && x < size;
+function _wrap(fn) {
+    return (a, b) => !fn(b, a);
+}
+
+function checkRange(x, end) {
+    return 0 <= x && x < end;
+}
+
+class BinaryIndexedTree {
+
+    /**
+     * @param {number} size
+     */
+    constructor(size) {
+        this.bit_ = Array(size + 1).fill(0);
+        this.size_ = size;
+    }
+
+    /**
+     * @returns {number} size of BIT
+     * real size of BIT is length + 1
+     */
+    get length() {
+        return this.size_;
     }
 
     /**
@@ -17,11 +37,11 @@ function BinaryIndexedTree(size) {
      * @returns {boolean} successfully added or not
      * O(log(N))
      */
-    this.add = function add(idx, val) {
-        if (!checkRange(idx)) return false;
+    add(idx, val) {
+        if (!checkRange(idx, this.size_)) return false;
         idx++;
-        for(let x = idx, l = bit.length - 1; x <= l; x += x & -x) {
-            bit[x] += val;
+        for(let x = idx, l = this.bit_.length - 1; x <= l; x += x & -x) {
+            this.bit_[x] += val;
         }
         return true;
     }
@@ -31,12 +51,12 @@ function BinaryIndexedTree(size) {
      * @returns {number} sum of range [0..idx]
      * O(log(N))
      */
-    this.get = function get(idx) {
-        if (!checkRange(idx)) return undefined;
+    get(idx) {
+        if (!checkRange(idx, this.size_)) return undefined;
         idx++;
         let ans = 0;
         for(let x = idx; x > 0; x -= x & -x) {
-            ans += bit[x];
+            ans += this.bit_[x];
         }
         return ans;
     }
@@ -45,16 +65,8 @@ function BinaryIndexedTree(size) {
      * @returns {number} sum of range [0..size-1]
      * O(log(N))
      */
-    this.sum = function sum() {
-        return this.get(bit.length - 2);
-    }
-
-    function _comp(a, b) {
-        return a < b;
-    }
-
-    function _wrap(fn) {
-        return (a, b) => !fn(b, a);
+    sum() {
+        return this.get(this.bit_.length - 2);
     }
 
     /**
@@ -63,13 +75,14 @@ function BinaryIndexedTree(size) {
      * @param {number} begin - begin index of lower-bound
      * @param {number} end - end index of lower-bound
      * @returns {number} index of lower-bound
+     * [begin, end) - [1,2,3,4,5], begin = 1, end = 3 -> [2,3]
      * O(log(N) * log(N))
      */
-    this.lowerBound = function(target, comp, begin, end) {
+    lowerBound(target, comp, begin, end) {
         begin = begin || 0;
-        end = end || size;
-        if(begin < 0 && size <= begin) throw new Error('out-of-bounds');
-        if(end < 0 && size <= end) throw new Error('out-of-bounds');
+        end = end || this.size_;
+        if(!checkRange(begin, this.size_ + 1)) throw new Error('out-of-bounds');
+        if(!checkRange(end, this.size_ + 1)) throw new Error('out-of-bounds');
         if(typeof comp !== 'function') comp = _comp;
 
         let mid;
@@ -93,9 +106,20 @@ function BinaryIndexedTree(size) {
      * @returns {number} index of upper-bound
      * O(log(N) * log(N))
      */
-    this.upperBound = function(target, comp, begin, end) {
+    upperBound(target, comp, begin, end) {
         if(typeof comp !== 'function') comp = _comp;
         return this.lowerBound(target, _wrap(comp), begin, end);
+    }
+
+    /**
+     * @param {Array<number>} seed - BIT will be built from this array
+     */
+    static build(seed) {
+        const ret = new BinaryIndexedTree(seed.length);
+        for(let i = 0, l = seed.length; i < l; ++i) {
+            ret.add(i, seed[i]);
+        }
+        return ret;
     }
 }
 
