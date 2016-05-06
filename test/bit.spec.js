@@ -3,18 +3,18 @@ const assert = require("power-assert");
 import BIT from '../src/bit';
 
 describe('test', function () {
-    let bit, size;
+    let bit, size, cusum;
     beforeEach(function () {
         size = 10;
         bit = new BIT(size);
         for(let i = 0, l = size; i < l; ++i) {
             bit.add(i, i);
         }
+        cusum = Array(size).fill(0)
+            .reduce((acc, x, i) => (acc.push(i ? i + acc[i - 1] : i), acc), []);
     });
 
     it('works', function () {
-        const cusum = Array(size).fill(0)
-            .reduce((acc, x, i) => (acc.push(i ? i + acc[i - 1] : i), acc), []);
         for(let i = 0, l = size; i < l; ++i) {
             assert(bit.get(i) === cusum[i]);
         }
@@ -82,5 +82,10 @@ describe('test', function () {
             assert(ub === lb_);
             assert(lb === ub_);
         });
+    });
+
+    it('#toArray', () => {
+        const arr = bit.toArray();
+        assert.deepEqual(arr, cusum);
     });
 });

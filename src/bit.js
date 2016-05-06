@@ -39,7 +39,7 @@ class BinaryIndexedTree {
      */
     add(idx, val) {
         if (!checkRange(idx, this.length_)) return false;
-        for(let x = idx, l = this.bit_.length; x < l; x |= x + 1) {
+        for(let x = idx, l = this.length; x < l; x |= x + 1) {
             this.bit_[x] += val;
         }
         return true;
@@ -118,6 +118,17 @@ class BinaryIndexedTree {
             ret.add(i, seed[i]);
         }
         return ret;
+    }
+
+    /**
+     * @returns {Array<number>} array of cusum
+     */
+    toArray() {
+        const result = Array(this.length_).fill(0);
+        for(let i = 0, l = this.length_; i < l; ++i) {
+            result[i] = this.get(i);
+        }
+        return result;
     }
 }
 
