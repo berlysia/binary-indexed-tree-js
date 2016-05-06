@@ -13,22 +13,37 @@ function checkRange(x, end) {
     return 0 <= x && x < end;
 }
 
-class BinaryIndexedTree {
+/**
+ * BinaryIndexedTree implementation
+ */
+export default class BinaryIndexedTree {
 
     /**
      * @param {number} size
      */
     constructor(size) {
-        this.bit_ = Array(size).fill(0);
-        this.length_ = size;
+        this._bit = Array(size).fill(0);
+        this._length = size;
+    }
+
+    /**
+     * @param {Array<number>} seed - BIT will be built from this array
+     * @returns {BinaryIndexedTree} instance
+     * O(N * log(N))
+     */
+    static build(seed) {
+        const ret = new BinaryIndexedTree(seed.length);
+        for(let i = 0, l = seed.length; i < l; ++i) {
+            ret.add(i, seed[i]);
+        }
+        return ret;
     }
 
     /**
      * @returns {number} size of BIT
-     * real size of BIT is length + 1
      */
     get length() {
-        return this.length_;
+        return this._length;
     }
 
     /**
@@ -38,9 +53,9 @@ class BinaryIndexedTree {
      * O(log(N))
      */
     add(idx, val) {
-        if (!checkRange(idx, this.length_)) return false;
+        if (!checkRange(idx, this._length)) return false;
         for(let x = idx, l = this.length; x < l; x |= x + 1) {
-            this.bit_[x] += val;
+            this._bit[x] += val;
         }
         return true;
     }
@@ -51,10 +66,10 @@ class BinaryIndexedTree {
      * O(log(N))
      */
     get(idx) {
-        if (!checkRange(idx, this.length_)) return undefined;
+        if (!checkRange(idx, this._length)) return undefined;
         let ans = 0;
         for(let x = idx; x >= 0; x = (x & (x + 1)) - 1) {
-            ans += this.bit_[x];
+            ans += this._bit[x];
         }
         return ans;
     }
@@ -64,23 +79,24 @@ class BinaryIndexedTree {
      * O(log(N))
      */
     sum() {
-        return this.get(this.length_ - 1);
+        return this.get(this._length - 1);
     }
 
     /**
+     * find lower bound.
+     * [begin, end) - [1,2,3,4,5], begin = 1, end = 3 -> [2,3]
      * @param {number} target
      * @param {Function} comp
      * @param {number} begin - begin index of lower-bound
      * @param {number} end - end index of lower-bound
      * @returns {number} index of lower-bound
-     * [begin, end) - [1,2,3,4,5], begin = 1, end = 3 -> [2,3]
      * O(log(N) * log(N))
      */
     lowerBound(target, comp, begin, end) {
         begin = begin || 0;
-        end = end || this.length_;
-        if(!checkRange(begin, this.length_ + 1)) throw new Error(`Out of Bounds - begin: ${begin}, should be in [0, ${this.length_})`);
-        if(!checkRange(end, this.length_ + 1)) throw new Error(`Out of Bounds - end: ${end}, should be in [0, ${this.length_})`);
+        end = end || this._length;
+        if(!checkRange(begin, this._length + 1)) throw new Error(`Out of Bounds - begin: ${begin}, should be in [0, ${this._length})`);
+        if(!checkRange(end, this._length + 1)) throw new Error(`Out of Bounds - end: ${end}, should be in [0, ${this._length})`);
         if(typeof comp !== 'function') comp = _comp;
 
         let mid;
@@ -97,6 +113,7 @@ class BinaryIndexedTree {
 
 
     /**
+     * find upper bound.
      * @param {number} target
      * @param {Function} comp
      * @param {number} begin - begin index of upper-bound
@@ -110,26 +127,14 @@ class BinaryIndexedTree {
     }
 
     /**
-     * @param {Array<number>} seed - BIT will be built from this array
-     */
-    static build(seed) {
-        const ret = new BinaryIndexedTree(seed.length);
-        for(let i = 0, l = seed.length; i < l; ++i) {
-            ret.add(i, seed[i]);
-        }
-        return ret;
-    }
-
-    /**
      * @returns {Array<number>} array of cusum
+     * O(N * log(N))
      */
     toArray() {
-        const result = Array(this.length_).fill(0);
-        for(let i = 0, l = this.length_; i < l; ++i) {
+        const result = Array(this._length).fill(0);
+        for(let i = 0, l = this._length; i < l; ++i) {
             result[i] = this.get(i);
         }
         return result;
     }
 }
-
-module.exports = BinaryIndexedTree;
