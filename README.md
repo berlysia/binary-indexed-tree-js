@@ -8,6 +8,10 @@ Install with [npm](https://www.npmjs.com/):
 
     $ npm install binary-indexed-tree
 
+## BIT?
+
+Binary Indexed Tree (aka Fenwick Tree) is a data structure providing efficient methods for prefix-sum.
+
 ## Usage
 
 See the [DOC](https://berlysia.github.io/binary-indexed-tree-js).
