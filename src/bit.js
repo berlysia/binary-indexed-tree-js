@@ -1,6 +1,10 @@
 "use strict";
 const assert = require('assert');
 
+function isOdd(num) {
+    return num & 1;
+}
+
 function _comp(a, b) {
     return a < b;
 }
@@ -13,6 +17,25 @@ function checkRange(x, end) {
     return 0 <= x && x < end;
 }
 
+function mostSignificantBit(num) {
+    num |= (num >> 1);
+    num |= (num >> 2);
+    num |= (num >> 4);
+    num |= (num >> 8);
+    num |= (num >> 16);
+    return num - (num >> 1);
+}
+
+function greaterPowerOfTwo(num) {
+    const msb = mostSignificantBit(num);
+    return msb << 1;
+}
+
+function lessPowerOfTwo(num) {
+    const msb = mostSignificantBit(num);
+    return msb >> 1;
+}
+
 /**
  * BinaryIndexedTree implementation
  */
@@ -23,7 +46,6 @@ export default class BinaryIndexedTree {
      */
     constructor(size) {
         this._bit = Array(size).fill(0);
-        this._length = size;
     }
 
     /**
@@ -43,7 +65,7 @@ export default class BinaryIndexedTree {
      * @returns {number} size of BIT
      */
     get length() {
-        return this._length;
+        return this._bit.length;
     }
 
     /**
@@ -53,7 +75,7 @@ export default class BinaryIndexedTree {
      * O(log(N))
      */
     add(idx, val) {
-        if (!checkRange(idx, this._length)) return false;
+        if (!checkRange(idx, this.length)) return false;
         for(let x = idx, l = this.length; x < l; x |= x + 1) {
             this._bit[x] += val;
         }
@@ -66,7 +88,7 @@ export default class BinaryIndexedTree {
      * O(log(N))
      */
     get(idx) {
-        if (!checkRange(idx, this._length)) return undefined;
+        if (!checkRange(idx, this.length)) return undefined;
         let ans = 0;
         for(let x = idx; x >= 0; x = (x & (x + 1)) - 1) {
             ans += this._bit[x];
@@ -79,61 +101,68 @@ export default class BinaryIndexedTree {
      * O(log(N))
      */
     sum() {
-        return this.get(this._length - 1);
+        return this.get(this.length - 1);
     }
 
     /**
      * find lower bound.
+     * SEQUENCE SHOULD BE INCREASING IN ORDER (GIVEN BY COMPERATOR).
+     * IF ANY ITEM HAS MINUS VALUE, THIS METHOD WILL NOT WORK.
      * [begin, end) - [1,2,3,4,5], begin = 1, end = 3 -> [2,3]
      * @param {number} target
      * @param {Function} comp
-     * @param {number} begin - begin index of lower-bound
-     * @param {number} end - end index of lower-bound
      * @returns {number} index of lower-bound
-     * O(log(N) * log(N))
+     * O(log(N))
      */
-    lowerBound(target, comp, begin, end) {
-        begin = begin || 0;
-        end = end || this._length;
-        if(!checkRange(begin, this._length + 1)) throw new Error(`Out of Bounds - begin: ${begin}, should be in [0, ${this._length})`);
-        if(!checkRange(end, this._length + 1)) throw new Error(`Out of Bounds - end: ${end}, should be in [0, ${this._length})`);
+    lowerBound(target, comp) {
+        const length = this.length;
         if(typeof comp !== 'function') comp = _comp;
 
-        let mid;
-        while (end - begin > 1) {
-            mid = (begin + end) >> 1;
-            if (comp(this.get(mid), target)) {
-                begin = mid;
+        let ans = 0, k = greaterPowerOfTwo(target);
+        while(k > 0) {
+            if(checkRange(ans + k, length + 1) && comp(this._bit[ans + k - 1], target)) {
+                target -= this._bit[ans + k - 1];
+                ans |= k;
+                k |= lessPowerOfTwo(k);
             } else {
-                end = mid;
+                k = lessPowerOfTwo(k);
             }
         }
-        return comp(this.get(begin), target) ? end : begin;
+
+        return ans;
     }
 
 
     /**
      * find upper bound.
+     * SEQUENCE SHOULD BE INCREASING IN ORDER (GIVEN BY COMPERATOR).
+     * IF ANY ITEM HAS MINUS VALUE, THIS METHOD WILL NOT WORK.
      * @param {number} target
      * @param {Function} comp
-     * @param {number} begin - begin index of upper-bound
-     * @param {number} end - end index of upper-bound
      * @returns {number} index of upper-bound
-     * O(log(N) * log(N))
+     * O(log(N))
      */
-    upperBound(target, comp, begin, end) {
+    upperBound(target, comp) {
         if(typeof comp !== 'function') comp = _comp;
-        return this.lowerBound(target, _wrap(comp), begin, end);
+        return this.lowerBound(target, _wrap(comp));
     }
 
     /**
      * @returns {Array<number>} array of cusum
-     * O(N * log(N))
+     * O(N)
      */
     toArray() {
-        const result = Array(this._length).fill(0);
-        for(let i = 0, l = this._length; i < l; ++i) {
-            result[i] = this.get(i);
+        const result = Array(this.length).fill(0);
+
+        let lastOdd = 0;
+        for(let i = 0, l = this.length; i < l; ++i) {
+            const odd = isOdd(i);
+            const pow2 = greaterPowerOfTwo(i) - 1;
+            result[i] = this._bit[i] + (i !== pow2 ? lastOdd : 0);
+
+            if(isOdd(i)) {
+                lastOdd = result[i];
+            }
         }
         return result;
     }
