@@ -51,12 +51,15 @@ export default class BinaryIndexedTree {
     /**
      * @param {Array<number>} seed - BIT will be built from this array
      * @returns {BinaryIndexedTree} instance
-     * O(N * log(N))
+     * O(N)
      */
     static build(seed) {
         const ret = new BinaryIndexedTree(seed.length);
         for(let i = 0, l = seed.length; i < l; ++i) {
-            ret.add(i, seed[i]);
+            ret._bit[i] = seed[i];
+        }
+        for(let i = 0, l = seed.length - 1; i < l; ++i) {
+            ret._bit[i | (i + 1)] += ret._bit[i];
         }
         return ret;
     }
