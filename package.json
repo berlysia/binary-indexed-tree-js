@@ -1,6 +1,6 @@
 {
   "name": "binary-indexed-tree",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Binary Indexed Tree(aka Fenwick Tree) implementation",
   "main": "lib/bit.js",
   "scripts": {
