@@ -112,7 +112,7 @@ export default class BinaryIndexedTree {
      * SEQUENCE SHOULD BE INCREASING IN ORDER (GIVEN BY COMPERATOR).
      * IF ANY ITEM HAS MINUS VALUE, THIS METHOD WILL NOT WORK.
      * @param {number} target
-     * @param {Function} [comp = (a, b) => a < b]
+     * @param {Function} [comp]
      * @returns {number} index of lower-bound
      * O(log(N))
      */
@@ -140,7 +140,7 @@ export default class BinaryIndexedTree {
      * SEQUENCE SHOULD BE INCREASING IN ORDER (GIVEN BY COMPERATOR).
      * IF ANY ITEM HAS MINUS VALUE, THIS METHOD WILL NOT WORK.
      * @param {number} target
-     * @param {Function} [comp = (a, b) => a < b]
+     * @param {Function} [comp]
      * @returns {number} index of upper-bound
      * O(log(N))
      */
