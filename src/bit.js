@@ -156,11 +156,13 @@ export default class BinaryIndexedTree {
     toArray() {
         const result = Array(this.length).fill(0);
 
+        for(let i = 1, l = this.length - 1; i < l; i *= 2) {
+            result[i - 1] = 1; // mark pow2 values
+        }
+
         let lastOdd = 0;
         for(let i = 0, l = this.length; i < l; ++i) {
-            const odd = isOdd(i);
-            const pow2 = greaterPowerOfTwo(i) - 1;
-            result[i] = this._bit[i] + (i !== pow2 ? lastOdd : 0);
+            result[i] = this._bit[i] + (result[i] ? 0 : lastOdd);
 
             if(isOdd(i)) {
                 lastOdd = result[i];
