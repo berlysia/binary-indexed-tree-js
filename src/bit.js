@@ -79,8 +79,8 @@ class BinaryIndexedTree {
     lowerBound(target, comp, begin, end) {
         begin = begin || 0;
         end = end || this.length_;
-        if(!checkRange(begin, this.length_ + 1)) throw new Error('out-of-bounds');
-        if(!checkRange(end, this.length_ + 1)) throw new Error('out-of-bounds');
+        if(!checkRange(begin, this.length_ + 1)) throw new Error(`Out of Bounds - begin: ${begin}, should be in [0, ${this.length_})`);
+        if(!checkRange(end, this.length_ + 1)) throw new Error(`Out of Bounds - end: ${end}, should be in [0, ${this.length_})`);
         if(typeof comp !== 'function') comp = _comp;
 
         let mid;
