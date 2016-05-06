@@ -20,6 +20,15 @@ describe('test', function () {
         }
     });
 
+    it('build', function () {
+        const seq = Array(size).fill(0).map((x, i) => i);
+        const built = BIT.build(seq);
+
+        for(let i = 0, l = size; i < l; ++i) {
+            assert(bit.get(i) === cusum[i]);
+        }
+    });
+
     it('access out of range returns undefined', function () {
         assert(bit.get(size) === undefined);
         assert(bit.get(-1) === undefined);
