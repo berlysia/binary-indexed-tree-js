@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../">
+  <title data-ice="title">src/bit.js | API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+  <script src="script/manual.js"></script>
+</head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <a data-ice="repoURL" href="https://github.com/berlysia/binary-indexed-tree-js" class="repo-url-github">Repository</a>
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/bit.js~BinaryIndexedTree.html">BinaryIndexedTree</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/bit.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">&quot;use strict&quot;;
+const assert = require(&apos;assert&apos;);
+
+function _comp(a, b) {
+    return a &lt; b;
+}
+
+function _wrap(fn) {
+    return (a, b) =&gt; !fn(b, a);
+}
+
+function checkRange(x, end) {
+    return 0 &lt;= x &amp;&amp; x &lt; end;
+}
+
+/**
+ * BinaryIndexedTree implementation
+ */
+export default class BinaryIndexedTree {
+
+    /**
+     * @param {number} size
+     */
+    constructor(size) {
+        this._bit = Array(size).fill(0);
+        this._length = size;
+    }
+
+    /**
+     * @param {Array&lt;number&gt;} seed - BIT will be built from this array
+     * @returns {BinaryIndexedTree} instance
+     * O(N * log(N))
+     */
+    static build(seed) {
+        const ret = new BinaryIndexedTree(seed.length);
+        for(let i = 0, l = seed.length; i &lt; l; ++i) {
+            ret.add(i, seed[i]);
+        }
+        return ret;
+    }
+
+    /**
+     * @returns {number} size of BIT
+     */
+    get length() {
+        return this._length;
+    }
+
+    /**
+     * @param {number} idx - should be less than size of BIT
+     * @param {number} val
+     * @returns {boolean} successfully added or not
+     * O(log(N))
+     */
+    add(idx, val) {
+        if (!checkRange(idx, this._length)) return false;
+        for(let x = idx, l = this.length; x &lt; l; x |= x + 1) {
+            this._bit[x] += val;
+        }
+        return true;
+    }
+
+    /**
+     * @param {number} idx - should be less than size of BIT
+     * @returns {number} sum of range [0..idx]
+     * O(log(N))
+     */
+    get(idx) {
+        if (!checkRange(idx, this._length)) return undefined;
+        let ans = 0;
+        for(let x = idx; x &gt;= 0; x = (x &amp; (x + 1)) - 1) {
+            ans += this._bit[x];
+        }
+        return ans;
+    }
+
+    /**
+     * @returns {number} sum of range [0..size-1]
+     * O(log(N))
+     */
+    sum() {
+        return this.get(this._length - 1);
+    }
+
+    /**
+     * find lower bound.
+     * [begin, end) - [1,2,3,4,5], begin = 1, end = 3 -&gt; [2,3]
+     * @param {number} target
+     * @param {Function} comp
+     * @param {number} begin - begin index of lower-bound
+     * @param {number} end - end index of lower-bound
+     * @returns {number} index of lower-bound
+     * O(log(N) * log(N))
+     */
+    lowerBound(target, comp, begin, end) {
+        begin = begin || 0;
+        end = end || this._length;
+        if(!checkRange(begin, this._length + 1)) throw new Error(`Out of Bounds - begin: ${begin}, should be in [0, ${this._length})`);
+        if(!checkRange(end, this._length + 1)) throw new Error(`Out of Bounds - end: ${end}, should be in [0, ${this._length})`);
+        if(typeof comp !== &apos;function&apos;) comp = _comp;
+
+        let mid;
+        while (end - begin &gt; 1) {
+            mid = (begin + end) &gt;&gt; 1;
+            if (comp(this.get(mid), target)) {
+                begin = mid;
+            } else {
+                end = mid;
+            }
+        }
+        return comp(this.get(begin), target) ? end : begin;
+    }
+
+
+    /**
+     * find upper bound.
+     * @param {number} target
+     * @param {Function} comp
+     * @param {number} begin - begin index of upper-bound
+     * @param {number} end - end index of upper-bound
+     * @returns {number} index of upper-bound
+     * O(log(N) * log(N))
+     */
+    upperBound(target, comp, begin, end) {
+        if(typeof comp !== &apos;function&apos;) comp = _comp;
+        return this.lowerBound(target, _wrap(comp), begin, end);
+    }
+
+    /**
+     * @returns {Array&lt;number&gt;} array of cusum
+     * O(N * log(N))
+     */
+    toArray() {
+        const result = Array(this._length).fill(0);
+        for(let i = 0, l = this._length; i &lt; l; ++i) {
+            result[i] = this.get(i);
+        }
+        return result;
+    }
+}
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.4.7)</span></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>
