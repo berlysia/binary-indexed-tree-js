@@ -108,9 +108,8 @@ export default class BinaryIndexedTree {
      * find lower bound.
      * SEQUENCE SHOULD BE INCREASING IN ORDER (GIVEN BY COMPERATOR).
      * IF ANY ITEM HAS MINUS VALUE, THIS METHOD WILL NOT WORK.
-     * [begin, end) - [1,2,3,4,5], begin = 1, end = 3 -> [2,3]
      * @param {number} target
-     * @param {Function} comp
+     * @param {Function} [comp = (a, b) => a < b]
      * @returns {number} index of lower-bound
      * O(log(N))
      */
@@ -138,7 +137,7 @@ export default class BinaryIndexedTree {
      * SEQUENCE SHOULD BE INCREASING IN ORDER (GIVEN BY COMPERATOR).
      * IF ANY ITEM HAS MINUS VALUE, THIS METHOD WILL NOT WORK.
      * @param {number} target
-     * @param {Function} comp
+     * @param {Function} [comp = (a, b) => a < b]
      * @returns {number} index of upper-bound
      * O(log(N))
      */
