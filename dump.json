@@ -10,7 +10,7 @@
     "access": null,
     "description": null,
     "lineNumber": 1,
-    "content": "\"use strict\";\nconst assert = require('assert');\n\nfunction isOdd(num) {\n    return num & 1;\n}\n\nfunction _comp(a, b) {\n    return a < b;\n}\n\nfunction _wrap(fn) {\n    return (a, b) => !fn(b, a);\n}\n\nfunction checkRange(x, end) {\n    return 0 <= x && x < end;\n}\n\nfunction mostSignificantBit(num) {\n    num |= (num >> 1);\n    num |= (num >> 2);\n    num |= (num >> 4);\n    num |= (num >> 8);\n    num |= (num >> 16);\n    return num - (num >> 1);\n}\n\nfunction greaterPowerOfTwo(num) {\n    const msb = mostSignificantBit(num);\n    return msb << 1;\n}\n\nfunction lessPowerOfTwo(num) {\n    const msb = mostSignificantBit(num);\n    return msb >> 1;\n}\n\n/**\n * BinaryIndexedTree implementation\n */\nexport default class BinaryIndexedTree {\n\n    /**\n     * @param {number} size\n     */\n    constructor(size) {\n        this._bit = Array(size).fill(0);\n    }\n\n    /**\n     * @param {Array<number>} seed - BIT will be built from this array\n     * @returns {BinaryIndexedTree} instance\n     * O(N * log(N))\n     */\n    static build(seed) {\n        const ret = new BinaryIndexedTree(seed.length);\n        for(let i = 0, l = seed.length; i < l; ++i) {\n            ret.add(i, seed[i]);\n        }\n        return ret;\n    }\n\n    /**\n     * @returns {number} size of BIT\n     */\n    get length() {\n        return this._bit.length;\n    }\n\n    /**\n     * @param {number} idx - should be less than size of BIT\n     * @param {number} val\n     * @returns {boolean} successfully added or not\n     * O(log(N))\n     */\n    add(idx, val) {\n        if (!checkRange(idx, this.length)) return false;\n        for(let x = idx, l = this.length; x < l; x |= x + 1) {\n            this._bit[x] += val;\n        }\n        return true;\n    }\n\n    /**\n     * @param {number} idx - should be less than size of BIT\n     * @returns {number} sum of range [0..idx]\n     * O(log(N))\n     */\n    get(idx) {\n        if (!checkRange(idx, this.length)) return undefined;\n        let ans = 0;\n        for(let x = idx; x >= 0; x = (x & (x + 1)) - 1) {\n            ans += this._bit[x];\n        }\n        return ans;\n    }\n\n    /**\n     * @returns {number} sum of range [0..size-1]\n     * O(log(N))\n     */\n    sum() {\n        return this.get(this.length - 1);\n    }\n\n    /**\n     * find lower bound.\n     * SEQUENCE SHOULD BE INCREASING IN ORDER (GIVEN BY COMPERATOR).\n     * IF ANY ITEM HAS MINUS VALUE, THIS METHOD WILL NOT WORK.\n     * [begin, end) - [1,2,3,4,5], begin = 1, end = 3 -> [2,3]\n     * @param {number} target\n     * @param {Function} comp\n     * @returns {number} index of lower-bound\n     * O(log(N))\n     */\n    lowerBound(target, comp) {\n        const length = this.length;\n        if(typeof comp !== 'function') comp = _comp;\n\n        let ans = 0, k = greaterPowerOfTwo(target);\n        while(k > 0) {\n            if(checkRange(ans + k, length + 1) && comp(this._bit[ans + k - 1], target)) {\n                target -= this._bit[ans + k - 1];\n                ans |= k;\n                k |= lessPowerOfTwo(k);\n            } else {\n                k = lessPowerOfTwo(k);\n            }\n        }\n\n        return ans;\n    }\n\n\n    /**\n     * find upper bound.\n     * SEQUENCE SHOULD BE INCREASING IN ORDER (GIVEN BY COMPERATOR).\n     * IF ANY ITEM HAS MINUS VALUE, THIS METHOD WILL NOT WORK.\n     * @param {number} target\n     * @param {Function} comp\n     * @returns {number} index of upper-bound\n     * O(log(N))\n     */\n    upperBound(target, comp) {\n        if(typeof comp !== 'function') comp = _comp;\n        return this.lowerBound(target, _wrap(comp));\n    }\n\n    /**\n     * @returns {Array<number>} array of cusum\n     * O(N)\n     */\n    toArray() {\n        const result = Array(this.length).fill(0);\n\n        let lastOdd = 0;\n        for(let i = 0, l = this.length; i < l; ++i) {\n            const odd = isOdd(i);\n            const pow2 = greaterPowerOfTwo(i) - 1;\n            result[i] = this._bit[i] + (i !== pow2 ? lastOdd : 0);\n\n            if(isOdd(i)) {\n                lastOdd = result[i];\n            }\n        }\n        return result;\n    }\n}\n"
+    "content": "\"use strict\";\nconst assert = require('assert');\n\nfunction isOdd(num) {\n    return num & 1;\n}\n\nfunction _comp(a, b) {\n    return a < b;\n}\n\nfunction _wrap(fn) {\n    return (a, b) => !fn(b, a);\n}\n\nfunction checkRange(x, end) {\n    return 0 <= x && x < end;\n}\n\nfunction mostSignificantBit(num) {\n    num |= (num >> 1);\n    num |= (num >> 2);\n    num |= (num >> 4);\n    num |= (num >> 8);\n    num |= (num >> 16);\n    return num - (num >> 1);\n}\n\nfunction greaterPowerOfTwo(num) {\n    const msb = mostSignificantBit(num);\n    return msb << 1;\n}\n\nfunction lessPowerOfTwo(num) {\n    const msb = mostSignificantBit(num);\n    return msb >> 1;\n}\n\n/**\n * BinaryIndexedTree implementation\n */\nexport default class BinaryIndexedTree {\n\n    /**\n     * @param {number} size\n     */\n    constructor(size) {\n        this._bit = Array(size).fill(0);\n    }\n\n    /**\n     * @param {Array<number>} seed - BIT will be built from this array\n     * @returns {BinaryIndexedTree} instance\n     * O(N)\n     */\n    static build(seed) {\n        const ret = new BinaryIndexedTree(seed.length);\n        for(let i = 0, l = seed.length; i < l; ++i) {\n            ret._bit[i] = seed[i];\n        }\n        for(let i = 0, l = seed.length - 1; i < l; ++i) {\n            ret._bit[i | (i + 1)] += ret._bit[i];\n        }\n        return ret;\n    }\n\n    /**\n     * @returns {number} size of BIT\n     */\n    get length() {\n        return this._bit.length;\n    }\n\n    /**\n     * @param {number} idx - should be less than size of BIT\n     * @param {number} val\n     * @returns {boolean} successfully added or not\n     * O(log(N))\n     */\n    add(idx, val) {\n        if (!checkRange(idx, this.length)) return false;\n        for(let x = idx, l = this.length; x < l; x |= x + 1) {\n            this._bit[x] += val;\n        }\n        return true;\n    }\n\n    /**\n     * @param {number} idx - should be less than size of BIT\n     * @returns {number} sum of range [0..idx]\n     * O(log(N))\n     */\n    get(idx) {\n        if (!checkRange(idx, this.length)) return undefined;\n        let ans = 0;\n        for(let x = idx; x >= 0; x = (x & (x + 1)) - 1) {\n            ans += this._bit[x];\n        }\n        return ans;\n    }\n\n    /**\n     * @returns {number} sum of range [0..size-1]\n     * O(log(N))\n     */\n    sum() {\n        return this.get(this.length - 1);\n    }\n\n    /**\n     * find lower bound.\n     * SEQUENCE SHOULD BE INCREASING IN ORDER (GIVEN BY COMPERATOR).\n     * IF ANY ITEM HAS MINUS VALUE, THIS METHOD WILL NOT WORK.\n     * @param {number} target\n     * @param {Function} [comp = (a, b) => a < b]\n     * @returns {number} index of lower-bound\n     * O(log(N))\n     */\n    lowerBound(target, comp) {\n        const length = this.length;\n        if(typeof comp !== 'function') comp = _comp;\n\n        let ans = 0, k = greaterPowerOfTwo(target);\n        while(k > 0) {\n            if(checkRange(ans + k, length + 1) && comp(this._bit[ans + k - 1], target)) {\n                target -= this._bit[ans + k - 1];\n                ans |= k;\n                k |= lessPowerOfTwo(k);\n            } else {\n                k = lessPowerOfTwo(k);\n            }\n        }\n\n        return ans;\n    }\n\n\n    /**\n     * find upper bound.\n     * SEQUENCE SHOULD BE INCREASING IN ORDER (GIVEN BY COMPERATOR).\n     * IF ANY ITEM HAS MINUS VALUE, THIS METHOD WILL NOT WORK.\n     * @param {number} target\n     * @param {Function} [comp = (a, b) => a < b]\n     * @returns {number} index of upper-bound\n     * O(log(N))\n     */\n    upperBound(target, comp) {\n        if(typeof comp !== 'function') comp = _comp;\n        return this.lowerBound(target, _wrap(comp));\n    }\n\n    /**\n     * @returns {Array<number>} array of cusum\n     * O(N)\n     */\n    toArray() {\n        const result = Array(this.length).fill(0);\n\n        let lastOdd = 0;\n        for(let i = 0, l = this.length; i < l; ++i) {\n            const odd = isOdd(i);\n            const pow2 = greaterPowerOfTwo(i) - 1;\n            result[i] = this._bit[i] + (i !== pow2 ? lastOdd : 0);\n\n            if(isOdd(i)) {\n                lastOdd = result[i];\n            }\n        }\n        return result;\n    }\n}\n"
   },
   {
     "__docId__": 1,
@@ -328,7 +328,7 @@
     "unknown": [
       {
         "tagName": "@returns",
-        "tagValue": "{BinaryIndexedTree} instance\nO(N * log(N))"
+        "tagValue": "{BinaryIndexedTree} instance\nO(N)"
       }
     ],
     "params": [
@@ -349,7 +349,7 @@
         "BinaryIndexedTree"
       ],
       "spread": false,
-      "description": "instance\nO(N * log(N))"
+      "description": "instance\nO(N)"
     },
     "generator": false
   },
@@ -363,7 +363,7 @@
     "longname": "src/bit.js~BinaryIndexedTree#length",
     "access": null,
     "description": "",
-    "lineNumber": 67,
+    "lineNumber": 70,
     "unknown": [
       {
         "tagName": "@returns",
@@ -395,7 +395,7 @@
     "longname": "src/bit.js~BinaryIndexedTree#add",
     "access": null,
     "description": "",
-    "lineNumber": 77,
+    "lineNumber": 80,
     "unknown": [
       {
         "tagName": "@returns",
@@ -444,7 +444,7 @@
     "longname": "src/bit.js~BinaryIndexedTree#get",
     "access": null,
     "description": "",
-    "lineNumber": 90,
+    "lineNumber": 93,
     "unknown": [
       {
         "tagName": "@returns",
@@ -483,7 +483,7 @@
     "longname": "src/bit.js~BinaryIndexedTree#sum",
     "access": null,
     "description": "",
-    "lineNumber": 103,
+    "lineNumber": 106,
     "unknown": [
       {
         "tagName": "@returns",
@@ -510,8 +510,8 @@
     "memberof": "src/bit.js~BinaryIndexedTree",
     "longname": "src/bit.js~BinaryIndexedTree#lowerBound",
     "access": null,
-    "description": "find lower bound.\nSEQUENCE SHOULD BE INCREASING IN ORDER (GIVEN BY COMPERATOR).\nIF ANY ITEM HAS MINUS VALUE, THIS METHOD WILL NOT WORK.\n[begin, end) - [1,2,3,4,5], begin = 1, end = 3 -> [2,3]",
-    "lineNumber": 117,
+    "description": "find lower bound.\nSEQUENCE SHOULD BE INCREASING IN ORDER (GIVEN BY COMPERATOR).\nIF ANY ITEM HAS MINUS VALUE, THIS METHOD WILL NOT WORK.",
+    "lineNumber": 119,
     "unknown": [
       {
         "tagName": "@returns",
@@ -535,9 +535,9 @@
           "Function"
         ],
         "spread": false,
-        "optional": false,
+        "optional": true,
         "name": "comp",
-        "description": ""
+        "description": "= (a, b) => a < b]"
       }
     ],
     "return": {
@@ -560,7 +560,7 @@
     "longname": "src/bit.js~BinaryIndexedTree#upperBound",
     "access": null,
     "description": "find upper bound.\nSEQUENCE SHOULD BE INCREASING IN ORDER (GIVEN BY COMPERATOR).\nIF ANY ITEM HAS MINUS VALUE, THIS METHOD WILL NOT WORK.",
-    "lineNumber": 145,
+    "lineNumber": 147,
     "unknown": [
       {
         "tagName": "@returns",
@@ -584,9 +584,9 @@
           "Function"
         ],
         "spread": false,
-        "optional": false,
+        "optional": true,
         "name": "comp",
-        "description": ""
+        "description": "= (a, b) => a < b]"
       }
     ],
     "return": {
@@ -609,7 +609,7 @@
     "longname": "src/bit.js~BinaryIndexedTree#toArray",
     "access": null,
     "description": "",
-    "lineNumber": 154,
+    "lineNumber": 156,
     "unknown": [
       {
         "tagName": "@returns",

@@ -91,12 +91,15 @@ export default class BinaryIndexedTree {
     /**
      * @param {Array&lt;number&gt;} seed - BIT will be built from this array
      * @returns {BinaryIndexedTree} instance
-     * O(N * log(N))
+     * O(N)
      */
     static build(seed) {
         const ret = new BinaryIndexedTree(seed.length);
         for(let i = 0, l = seed.length; i &lt; l; ++i) {
-            ret.add(i, seed[i]);
+            ret._bit[i] = seed[i];
+        }
+        for(let i = 0, l = seed.length - 1; i &lt; l; ++i) {
+            ret._bit[i | (i + 1)] += ret._bit[i];
         }
         return ret;
     }
@@ -148,9 +151,8 @@ export default class BinaryIndexedTree {
      * find lower bound.
      * SEQUENCE SHOULD BE INCREASING IN ORDER (GIVEN BY COMPERATOR).
      * IF ANY ITEM HAS MINUS VALUE, THIS METHOD WILL NOT WORK.
-     * [begin, end) - [1,2,3,4,5], begin = 1, end = 3 -&gt; [2,3]
      * @param {number} target
-     * @param {Function} comp
+     * @param {Function} [comp = (a, b) =&gt; a &lt; b]
      * @returns {number} index of lower-bound
      * O(log(N))
      */
@@ -178,7 +180,7 @@ export default class BinaryIndexedTree {
      * SEQUENCE SHOULD BE INCREASING IN ORDER (GIVEN BY COMPERATOR).
      * IF ANY ITEM HAS MINUS VALUE, THIS METHOD WILL NOT WORK.
      * @param {number} target
-     * @param {Function} comp
+     * @param {Function} [comp = (a, b) =&gt; a &lt; b]
      * @returns {number} index of upper-bound
      * O(log(N))
      */
