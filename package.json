@@ -12,11 +12,7 @@
     "doc:publish": "gh-pages -d doc",
     "doc": "npm run doc:build && npm run doc:publish"
   },
-  "directories": {
-    "test": "test"
-  },
   "files": [
-    "src/",
     "lib/"
   ],
   "author": "berlysia",
