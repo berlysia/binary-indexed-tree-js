@@ -1,3 +1,13 @@
+<a name="0.1.4"></a>
+## [0.1.4](https://github.com/berlysia/binary-indexed-tree-js/compare/v0.1.3...v0.1.4) (2016-05-08)
+
+
+### Bug Fixes
+
+* **bit:** Fix toArray([f7d754c](https://github.com/berlysia/binary-indexed-tree-js/commit/f7d754c))
+
+
+
 <a name="0.1.3"></a>
 ## [0.1.3](https://github.com/berlysia/binary-indexed-tree-js/compare/v0.1.2...v0.1.3) (2016-05-06)
 
