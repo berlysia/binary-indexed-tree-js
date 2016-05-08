@@ -76,6 +76,15 @@ function lessPowerOfTwo(num) {
     return msb &gt;&gt; 1;
 }
 
+function mostSignificantBitSequence(num) {
+    let cursor = mostSignificantBit(num);
+    let ans = 0;
+    for(;num &amp; cursor; cursor &gt;&gt;= 1) {
+        ans |= cursor;
+    }
+    return ans;
+}
+
 /**
  * BinaryIndexedTree implementation
  */
@@ -196,18 +205,21 @@ export default class BinaryIndexedTree {
     toArray() {
         const result = Array(this.length).fill(0);
 
-        for(let i = 1, l = this.length - 1; i &lt; l; i *= 2) {
-            result[i - 1] = 1; // mark pow2 values
+        for(let i = 0, l = this.length; i &lt; l; ++i) {
+            result[i] = this._bit[i];
         }
 
-        let lastOdd = 0;
-        for(let i = 0, l = this.length; i &lt; l; ++i) {
-            result[i] = this._bit[i] + (result[i] ? 0 : lastOdd);
-
+        for(let i = 2, l = this.length; i &lt; l; ++i) {
             if(isOdd(i)) {
-                lastOdd = result[i];
+                const gp2 = greaterPowerOfTwo(i);
+                if(i !== gp2 - 1) {
+                    result[i] += result[(i &amp; (i + 1)) - 1];
+                }
+            } else {
+                result[i] += result[i - 1];
             }
         }
+
         return result;
     }
 }
