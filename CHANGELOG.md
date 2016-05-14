@@ -1,3 +1,13 @@
+<a name="0.2.0"></a>
+# [0.2.0](https://github.com/berlysia/binary-indexed-tree-js/compare/v0.1.4...v0.2.0) (2016-05-14)
+
+
+### Bug Fixes
+
+* **lowerBound:** Fix lower/upperBound([7083cb7](https://github.com/berlysia/binary-indexed-tree-js/commit/7083cb7))
+
+
+
 <a name="0.1.4"></a>
 ## [0.1.4](https://github.com/berlysia/binary-indexed-tree-js/compare/v0.1.3...v0.1.4) (2016-05-08)
 
