@@ -26,23 +26,8 @@ function mostSignificantBit(num) {
     return num - (num >> 1);
 }
 
-function greaterPowerOfTwo(num) {
-    const msb = mostSignificantBit(num);
-    return msb << 1;
-}
-
-function lessPowerOfTwo(num) {
-    const msb = mostSignificantBit(num);
-    return msb >> 1;
-}
-
-function mostSignificantBitSequence(num) {
-    let cursor = mostSignificantBit(num);
-    let ans = 0;
-    for(;num & cursor; cursor >>= 1) {
-        ans |= cursor;
-    }
-    return ans;
+function firstOne(num) {
+    return num & (-num);
 }
 
 /**
@@ -129,14 +114,15 @@ export default class BinaryIndexedTree {
         const length = this.length;
         if(typeof comp !== 'function') comp = _comp;
 
-        let ans = 0, k = greaterPowerOfTwo(target);
-        while(k > 0) {
-            if(checkRange(ans + k, length + 1) && comp(this._bit[ans + k - 1], target)) {
-                target -= this._bit[ans + k - 1];
-                ans |= k;
-                k |= lessPowerOfTwo(k);
+        let ans = 0, k = mostSignificantBit(length) * 2;
+        while(k === (k | 0)) {
+            const fo = firstOne(k);
+            if(checkRange(k, length + 1) && comp(this._bit[k - 1], target)) {
+                target -= this._bit[k - 1];
+                ans = k;
+                k += fo / 2;
             } else {
-                k = lessPowerOfTwo(k);
+                k += (fo / 2) - fo;
             }
         }
 
@@ -171,7 +157,7 @@ export default class BinaryIndexedTree {
 
         for(let i = 2, l = this.length; i < l; ++i) {
             if(isOdd(i)) {
-                const gp2 = greaterPowerOfTwo(i);
+                const gp2 = mostSignificantBit(i) * 2;
                 if(i !== gp2 - 1) {
                     result[i] += result[(i & (i + 1)) - 1];
                 }
