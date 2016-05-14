@@ -7,7 +7,7 @@
     "test": "mocha test/",
     "build": "NODE_ENV=production babel src --out-dir lib --source-maps",
     "watch": "babel src --out-dir lib --watch --source-maps",
-    "prepublish": "npm run --if-present build",
+    "prepublish": "npm run --if-present changelog && npm run --if-present build",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
     "doc:build": "esdoc -c esdoc.json",
     "doc:publish": "gh-pages -d doc",
