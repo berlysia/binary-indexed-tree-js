@@ -1,3 +1,13 @@
+<a name="0.3.0"></a>
+# [0.3.0](https://github.com/berlysia/binary-indexed-tree-js/compare/v0.2.0...v0.3.0) (2016-05-27)
+
+
+### Features
+
+* **replace:** Implement replace([025e037](https://github.com/berlysia/binary-indexed-tree-js/commit/025e037))
+
+
+
 <a name="0.2.0"></a>
 # [0.2.0](https://github.com/berlysia/binary-indexed-tree-js/compare/v0.1.4...v0.2.0) (2016-05-14)
 
