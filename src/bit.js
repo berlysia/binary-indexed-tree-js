@@ -17,17 +17,30 @@ function checkRange(x, end) {
     return 0 <= x && x < end;
 }
 
+function checkPowerOfTwo(num) {
+    if (num === 0) return false;
+    return (num & (num - 1)) === 0;
+}
+
 function mostSignificantBit(num) {
     num |= (num >> 1);
     num |= (num >> 2);
     num |= (num >> 4);
     num |= (num >> 8);
     num |= (num >> 16);
+    num |= (num >> 32);
     return num - (num >> 1);
 }
 
-function firstOne(num) {
+function leastSignificantBit(num) {
     return num & (-num);
+}
+
+// lowest common ancestor
+function lowestCommonAncestor(a, b) {
+    while(a % 2) a /= 2;
+    while(b % 2) b /= 2;
+    return a < b ? a : b;
 }
 
 /**
@@ -81,6 +94,37 @@ export default class BinaryIndexedTree {
 
     /**
      * @param {number} idx - should be less than size of BIT
+     * @param {number} val
+     * @returns {boolean} successfully replaced or not
+     * O(log(N))
+     */
+    replace(idx, val) {
+        if (!checkRange(idx, this.length)) return false;
+        const diff = val - this.original(idx);
+        return this.add(idx, diff);
+    }
+
+    /**
+     * @param {number} idx - should be less than size of BIT
+     * @returns {number} original value of array
+     * O(log(N))
+     */
+    original(idx) {
+        if (!checkRange(idx, this.length)) return undefined;
+        if (idx === 0) return this._bit[0];
+        let ans = 0;
+        const lca = lowestCommonAncestor(idx, idx - 1);
+        for(let x = idx; x >= lca; x = (x & (x + 1)) - 1) {
+            ans += this._bit[x];
+        }
+        for(let x = idx - 1; x >= lca; x = (x & (x + 1)) - 1) {
+            ans -= this._bit[x];
+        }
+        return ans;
+    }
+
+    /**
+     * @param {number} idx - should be less than size of BIT
      * @returns {number} sum of range [0..idx]
      * O(log(N))
      */
@@ -102,6 +146,60 @@ export default class BinaryIndexedTree {
     }
 
     /**
+     * linear search.
+     * @param {Function} check function
+     * @returns {number} value of first target, or undefined
+     */
+    find(check) {
+        if(typeof check !== 'function') throw new TypeError();
+
+        let value = this._bit[0];
+        if(check(value)) return value;
+
+        for (let x = 1, l = this.length; x < l; ++x) {
+            value += this._bit[x];
+            if (isOdd(x)) {
+                if (checkPowerOfTwo(x + 1)) {
+                    value -= this.get(x - 1);
+                } else {
+                    value -= this._bit[x - 1];
+                }
+            }
+
+            if(check(value)) return value;
+        }
+
+        return undefined;
+    }
+
+    /**
+     * linear search.
+     * @param {Function} check function
+     * @returns {number} index of first target, or -1
+     */
+    findIndex(check) {
+        if(typeof check !== 'function') throw new TypeError();
+
+        let value = this._bit[0];
+        if(check(value)) return 0;
+
+        for (let x = 1, l = this.length; x < l; ++x) {
+            value += this._bit[x];
+            if (isOdd(x)) {
+                if (checkPowerOfTwo(x + 1)) {
+                    value -= this.get(x - 1);
+                } else {
+                    value -= this._bit[x - 1];
+                }
+            }
+
+            if(check(value)) return x;
+        }
+
+        return -1;
+    }
+
+    /**
      * find lower bound.
      * SEQUENCE SHOULD BE INCREASING IN ORDER (GIVEN BY COMPERATOR).
      * IF ANY ITEM HAS MINUS VALUE, THIS METHOD WILL NOT WORK.
@@ -114,21 +212,20 @@ export default class BinaryIndexedTree {
         const length = this.length;
         if(typeof comp !== 'function') comp = _comp;
 
-        let ans = 0, k = mostSignificantBit(length) * 2;
-        while(k === (k | 0)) {
-            const fo = firstOne(k);
-            if(checkRange(k, length + 1) && comp(this._bit[k - 1], target)) {
-                target -= this._bit[k - 1];
-                ans = k;
-                k += fo / 2;
+        let ans = 0, x = mostSignificantBit(length) * 2;
+        while(x === (x | 0)) {
+            const lsb = leastSignificantBit(x);
+            if(checkRange(x, length + 1) && comp(this._bit[x - 1], target)) {
+                target -= this._bit[x - 1];
+                ans = x;
+                x += lsb / 2;
             } else {
-                k += (fo / 2) - fo;
+                x += (lsb / 2) - lsb;
             }
         }
 
         return ans;
     }
-
 
     /**
      * find upper bound.
@@ -157,8 +254,7 @@ export default class BinaryIndexedTree {
 
         for(let i = 2, l = this.length; i < l; ++i) {
             if(isOdd(i)) {
-                const gp2 = mostSignificantBit(i) * 2;
-                if(i !== gp2 - 1) {
+                if(!checkPowerOfTwo(i + 1)) {
                     result[i] += result[(i & (i + 1)) - 1];
                 }
             } else {

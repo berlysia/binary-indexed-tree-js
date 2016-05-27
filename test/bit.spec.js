@@ -2,8 +2,7 @@
 const assert = require("power-assert");
 import BIT from '../src/bit';
 
-const maxArraySize = 13
-;
+const maxArraySize = 5;
 
 describe('sequencial test', function () {
 
@@ -55,6 +54,12 @@ function basicTest(seed) {
         }
     });
 
+    it('#original - original values', function () {
+        for(let i = 0, l = size; i < l; ++i) {
+            assert(bit.original(i) === seed[i]);
+        }
+    });
+
     it('build', function () {
         const seq = Array(size).fill(0).map((x, i) => i);
         const built = BIT.build(seq);
@@ -69,21 +74,37 @@ function basicTest(seed) {
         assert(bit.get(-1) === undefined);
     });
 
+    describe('#find', function () {
+        it('works', function () {
+            const target = (size / 2) | 0;
+            const fn = x => x > target;
+
+            assert(cusum.find(fn) === bit.find(fn));
+        });
+    });
+
+    describe('#findIndex', function () {
+        it('works', function () {
+            const target = (size / 2) | 0;
+            const fn = x => x > target;
+
+            assert(cusum.findIndex(fn) === bit.findIndex(fn));
+        });
+    });
+
     describe('#lowerBound, #upperBound', function () {
 
-        if(2 < size) {
-            it('works', function () {
-                const target = (size / 2) | 0;
-                const lb = bit.lowerBound(target);
-                const ub = bit.upperBound(target);
+        it('works', function () {
+            const target = (size / 2) | 0;
+            const lb = bit.lowerBound(target);
+            const ub = bit.upperBound(target);
 
-                const expected_lb = lowerBoundExpected(cusum, x => target <= x);
-                const expected_ub = lowerBoundExpected(cusum, x => target < x);
+            const expected_lb = lowerBoundExpected(cusum, x => target <= x);
+            const expected_ub = lowerBoundExpected(cusum, x => target < x);
 
-                assert(expected_lb === lb);
-                assert(expected_ub === ub);
-            });
-        }
+            assert(expected_lb === lb);
+            assert(expected_ub === ub);
+        });
 
         it('too small target', function () {
             const target = -1;
