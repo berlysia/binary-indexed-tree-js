@@ -145,6 +145,7 @@ export default class BinaryIndexedTree {
      * O(log(N))
      */
     sum() {
+        if(this.length === 0) return 0;
         return this.get(this.length - 1);
     }
 
