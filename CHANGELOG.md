@@ -1,10 +1,15 @@
-<a name="0.3.0"></a>
-# [0.3.0](https://github.com/berlysia/binary-indexed-tree-js/compare/v0.2.0...v0.3.0) (2016-05-27)
+<a name="0.3.1"></a>
+## [0.3.1](https://github.com/berlysia/binary-indexed-tree-js/compare/v0.2.0...v0.3.1) (2016-06-01)
+
+
+### Bug Fixes
+
+* **build:** suppress empty item and NaN([e3e26c5](https://github.com/berlysia/binary-indexed-tree-js/commit/e3e26c5))
 
 
 ### Features
 
-* **replace:** Implement replace([025e037](https://github.com/berlysia/binary-indexed-tree-js/commit/025e037))
+* **replace:** Implement replace([c9283fa](https://github.com/berlysia/binary-indexed-tree-js/commit/c9283fa))
 
 
 
