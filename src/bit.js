@@ -66,7 +66,10 @@ export default class BinaryIndexedTree {
             ret._bit[i] = seed[i];
         }
         for(let i = 0, l = seed.length - 1; i < l; ++i) {
-            ret._bit[i | (i + 1)] += ret._bit[i];
+            const t = i | (i + 1);
+            if(t < l) {
+                ret._bit[i | (i + 1)] += ret._bit[i];
+            }
         }
         return ret;
     }
