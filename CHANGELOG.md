@@ -1,3 +1,13 @@
+<a name="0.3.3"></a>
+## [0.3.3](https://github.com/berlysia/binary-indexed-tree-js/compare/v0.3.2...v0.3.3) (2016-06-02)
+
+
+### Bug Fixes
+
+* **lowerBound:** Fix while condition([1c476d8](https://github.com/berlysia/binary-indexed-tree-js/commit/1c476d8))
+
+
+
 <a name="0.3.2"></a>
 ## [0.3.2](https://github.com/berlysia/binary-indexed-tree-js/compare/v0.3.1...v0.3.2) (2016-06-01)
 
