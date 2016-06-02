@@ -1,3 +1,13 @@
+<a name="0.3.4"></a>
+## [0.3.4](https://github.com/berlysia/binary-indexed-tree-js/compare/v0.3.3...v0.3.4) (2016-06-02)
+
+
+### Bug Fixes
+
+* **build:** now build works with 2^N size seed([865c16a](https://github.com/berlysia/binary-indexed-tree-js/commit/865c16a))
+
+
+
 <a name="0.3.3"></a>
 ## [0.3.3](https://github.com/berlysia/binary-indexed-tree-js/compare/v0.3.2...v0.3.3) (2016-06-02)
 
