@@ -217,7 +217,7 @@ export default class BinaryIndexedTree {
         if(typeof comp !== 'function') comp = _comp;
 
         let ans = 0, x = mostSignificantBit(length) * 2;
-        while(x === (x | 0)) {
+        while(x && x === (x | 0)) {
             const lsb = leastSignificantBit(x);
             if(checkRange(x, length + 1) && comp(this._bit[x - 1], target)) {
                 target -= this._bit[x - 1];
