@@ -1,3 +1,13 @@
+<a name="0.3.2"></a>
+## [0.3.2](https://github.com/berlysia/binary-indexed-tree-js/compare/v0.3.1...v0.3.2) (2016-06-01)
+
+
+### Bug Fixes
+
+* **sum:** Now sum for empty bit returns 0([bd0dc9b](https://github.com/berlysia/binary-indexed-tree-js/commit/bd0dc9b))
+
+
+
 <a name="0.3.1"></a>
 ## [0.3.1](https://github.com/berlysia/binary-indexed-tree-js/compare/v0.2.0...v0.3.1) (2016-06-01)
 
