@@ -162,24 +162,18 @@ export default class BinaryIndexedTree {
      * linear search.
      * @param {Function} check function
      * @returns {number} value of first target, or undefined
+     * O(N * log(N))
      */
     find(check) {
         if(typeof check !== 'function') throw new TypeError();
 
         let value = this._bit[0];
-        if(check(value)) return value;
+        if(check(value, 0, this)) return value;
 
-        for (let x = 1, l = this.length; x < l; ++x) {
-            value += this._bit[x];
-            if (isOdd(x)) {
-                if (checkPowerOfTwo(x + 1)) {
-                    value -= this.get(x - 1);
-                } else {
-                    value -= this._bit[x - 1];
-                }
-            }
+        for (let idx = 1, l = this.length; idx < l; ++idx) {
+            value += this.original(idx);
 
-            if(check(value)) return value;
+            if(check(value, idx, this)) return value;
         }
 
         return undefined;
@@ -189,24 +183,18 @@ export default class BinaryIndexedTree {
      * linear search.
      * @param {Function} check function
      * @returns {number} index of first target, or -1
+     * O(N * log(N))
      */
     findIndex(check) {
         if(typeof check !== 'function') throw new TypeError();
 
         let value = this._bit[0];
-        if(check(value)) return 0;
+        if(check(value, 0, this)) return 0;
 
-        for (let x = 1, l = this.length; x < l; ++x) {
-            value += this._bit[x];
-            if (isOdd(x)) {
-                if (checkPowerOfTwo(x + 1)) {
-                    value -= this.get(x - 1);
-                } else {
-                    value -= this._bit[x - 1];
-                }
-            }
+        for (let idx = 1, l = this.length; idx < l; ++idx) {
+            value += this.original(idx);
 
-            if(check(value)) return x;
+            if(check(value, idx, this)) return idx;
         }
 
         return -1;

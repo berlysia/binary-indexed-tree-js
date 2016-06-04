@@ -81,23 +81,29 @@ function basicTest(seed) {
         assert(bit.get(-1) === undefined);
     });
 
-    xdescribe('#find', function () {
-        it('works', function () {
-            const target = (size / 2) | 0;
-            const message = 'target: ' + target;
-            const fn = x => x > target;
+    describe('#find', function () {
+        for(let i = 0, l = size; i < l; ++i) {
+            it(`works with each item`, function () {
+                const target = cusum[i];
+                const message = `target: ${target}`;
+                const fn = x => x > target;
 
-            assert(cusum.find(fn) === bit.find(fn), message);
-        });
+                assert(cusum.find(fn) === bit.find(fn), message);
+            });
+        }
     });
 
-    xdescribe('#findIndex', function () {
-        it('works', function () {
-            const target = (size / 2) | 0;
-            const fn = x => x > target;
 
-            assert(cusum.findIndex(fn) === bit.findIndex(fn), 'target: ' + target);
-        });
+    describe('#findIndex', function () {
+        for(let i = 0, l = size; i < l; ++i) {
+            it(`works with each item`, function () {
+                const target = cusum[i];
+                const message = `target: ${target}`;
+                const fn = x => x > target;
+
+                assert(cusum.findIndex(fn) === bit.findIndex(fn), message);
+            });
+        }
     });
 
     describe('#lowerBound, #upperBound', function () {
