@@ -139,7 +139,18 @@ export default class BinaryIndexedTree {
     }
 
     /**
-     * @returns {number} sum of range [0..size-1]
+     * @param {number} idx - should be less than size of BIT
+     * @returns {number} sum of range [0..idx)
+     * O(log(N))
+     */
+    prefix(idx) {
+        if (!checkRange(idx, this.length)) return undefined;
+        if (idx === 0) return 0;
+        return this.get(idx - 1);
+    }
+
+    /**
+     * @returns {number} sum of all
      * O(log(N))
      */
     sum() {
