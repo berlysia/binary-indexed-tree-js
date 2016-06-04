@@ -1,11 +1,11 @@
 {
   "coverage": "100%",
-  "expectCount": 10,
-  "actualCount": 10,
+  "expectCount": 14,
+  "actualCount": 14,
   "files": {
     "src/bit.js": {
-      "expectCount": 10,
-      "actualCount": 10,
+      "expectCount": 14,
+      "actualCount": 14,
       "undocumentLines": []
     }
   }
