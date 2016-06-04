@@ -1,5 +1,4 @@
 "use strict";
-const assert = require('assert');
 
 function isOdd(num) {
     return num & 1;
@@ -36,7 +35,6 @@ function leastSignificantBit(num) {
     return num & (-num);
 }
 
-// lowest common ancestor
 function lowestCommonAncestor(a, b) {
     while(a % 2) a /= 2;
     while(b % 2) b /= 2;
