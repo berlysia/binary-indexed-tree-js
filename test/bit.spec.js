@@ -106,6 +106,30 @@ function basicTest(seed) {
         }
     });
 
+    describe('#indexOf', function () {
+        for(let i = 0, l = size; i < l; ++i) {
+            it(`works with each item`, function () {
+                const target = cusum[i];
+                const message = `target: ${target}`;
+                const fn = x => x > target;
+
+                assert(cusum.indexOf(target) === bit.indexOf(target), message);
+            });
+        }
+    });
+
+    describe('#lastIndexOf', function () {
+        for(let i = 0, l = size; i < l; ++i) {
+            it(`works with each item`, function () {
+                const target = cusum[i];
+                const message = `target: ${target}`;
+                const fn = x => x > target;
+
+                assert(cusum.lastIndexOf(target) === bit.lastIndexOf(target), message);
+            });
+        }
+    });
+
     describe('#lowerBound, #upperBound', function () {
 
         describe('each item', function () {

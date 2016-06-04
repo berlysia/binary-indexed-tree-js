@@ -8,6 +8,10 @@ function _comp(a, b) {
     return a < b;
 }
 
+function _equal(a, b) {
+    return a === b;
+}
+
 function _wrap(fn) {
     return (a, b) => !fn(b, a);
 }
@@ -195,6 +199,48 @@ export default class BinaryIndexedTree {
             value += this.original(idx);
 
             if(check(value, idx, this)) return idx;
+        }
+
+        return -1;
+    }
+
+    /**
+     * linear search.
+     * @param {number} target value
+     * @returns {number} index of first target, or -1
+     * O(N * log(N))
+     */
+    indexOf(target, equal) {
+        if(typeof equal !== 'function') equal = _equal;
+
+        let value = this._bit[0];
+        if(equal(value, target)) return 0;
+
+        for (let idx = 1, l = this.length; idx < l; ++idx) {
+            value += this.original(idx);
+
+            if(equal(value, target)) return idx;
+        }
+
+        return -1;
+    }
+
+    /**
+     * linear search.
+     * @param {number} target value
+     * @returns {number} index of last target, or -1
+     * O(N * log(N))
+     */
+    lastIndexOf(target, equal) {
+        if(typeof equal !== 'function') equal = _equal;
+
+        let value = this.sum();
+        if(equal(value, target)) return this.length - 1;
+
+        for (let idx = this.length - 1; 0 < idx; --idx) {
+            value -= this.original(idx);
+
+            if(equal(value, target)) return idx - 1;
         }
 
         return -1;
