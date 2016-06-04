@@ -207,6 +207,7 @@ export default class BinaryIndexedTree {
     /**
      * linear search.
      * @param {number} target value
+     * @param {Function} [equal] - equality function
      * @returns {number} index of first target, or -1
      * O(N * log(N))
      */
@@ -228,6 +229,7 @@ export default class BinaryIndexedTree {
     /**
      * linear search.
      * @param {number} target value
+     * @param {Function} [equal] - equality function
      * @returns {number} index of last target, or -1
      * O(N * log(N))
      */
