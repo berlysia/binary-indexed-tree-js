@@ -1,8 +1,10 @@
 "use strict";
 const assert = require("power-assert");
+const Random = require('random-js');
 import BIT from '../src/bit';
 
-const maxArraySize = 8;
+const maxArraySize = 7;
+const randomSeed = [75938205, 57102950, 91702362];
 
 describe('sequencial test', function () {
     describe(`with size = 0`, basicTest.bind(null, createSequencial(0)));
@@ -15,9 +17,11 @@ describe('sequencial test', function () {
 
 describe('random test', function () {
 
-    for(let size = 1, i = 0, l = maxArraySize; i < l; ++i, size*=2) {
-        describe(`with size = ${size}`, basicTest.bind(null, createRandom(size)));
-    };
+    randomSeed.forEach(seed => {
+        for(let size = 1, i = 0, l = maxArraySize; i < l; ++i, size*=2) {
+            describe(`with size = ${size}`, basicTest.bind(null, createRandom(size, seed)));
+        };        
+    })
 
 });
 
@@ -33,9 +37,11 @@ function createSequencial(size) {
     return ret;
 }
 
-function createRandom(size) {
+function createRandom(size, seed) {
     const ret = Array(size);
-    for(let i = 0; i < size; ++i) ret[i] = (Math.random() * size) | 0;
+    const max = Number.MAX_SAFE_INTEGER / size | 0;
+    const engine = Random.engines.mt19937().seed(seed);
+    for(let i = 0; i < size; ++i) ret[i] = Random.integer(0, max)(engine);
     return ret;
 }
 
