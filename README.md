@@ -14,11 +14,11 @@ Binary Indexed Tree (aka Fenwick Tree) is a data structure providing efficient m
 
 ## Usage
 
-See the [DOC](https://berlysia.github.io/binary-indexed-tree-js).
+Read the [DOC](https://berlysia.github.io/binary-indexed-tree-js).
 
 ## Changelog
 
-See [Releases page](https://github.com/berlysia/binary-indexed-tree-js#readme/releases).
+Read the [CHANGELOG](https://github.com/berlysia/binary-indexed-tree-js/blob/master/CHANGELOG.md).
 
 ## Running tests
 
