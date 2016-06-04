@@ -290,7 +290,7 @@
     <td>
       <div>
         <p>
-           <span data-ice="name"><span><a href="class/src/bit.js~BinaryIndexedTree.html#instance-method-indexOf">indexOf</a></span></span><span data-ice="signature">(target: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></span></span>
+           <span data-ice="name"><span><a href="class/src/bit.js~BinaryIndexedTree.html#instance-method-indexOf">indexOf</a></span></span><span data-ice="signature">(target: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></span>, equal: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">Function</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></span></span>
         </p>
       </div>
       <div>
@@ -316,7 +316,7 @@
     <td>
       <div>
         <p>
-           <span data-ice="name"><span><a href="class/src/bit.js~BinaryIndexedTree.html#instance-method-lastIndexOf">lastIndexOf</a></span></span><span data-ice="signature">(target: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></span></span>
+           <span data-ice="name"><span><a href="class/src/bit.js~BinaryIndexedTree.html#instance-method-lastIndexOf">lastIndexOf</a></span></span><span data-ice="signature">(target: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></span>, equal: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">Function</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></span></span>
         </p>
       </div>
       <div>
@@ -993,11 +993,11 @@ O(log(N))</p>
     
     
     
-    <span data-ice="name">indexOf</span><span data-ice="signature">(target: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></span></span>
+    <span data-ice="name">indexOf</span><span data-ice="signature">(target: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></span>, equal: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">Function</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/bit.js.html#lineNumber213">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/bit.js.html#lineNumber214">source</a></span></span>
     </span>
   </h3>
 
@@ -1022,6 +1022,13 @@ O(log(N))</p>
       <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></span></td>
       <td data-ice="appendix"></td>
       <td data-ice="description"><p>value</p>
+</td>
+    </tr>
+<tr data-ice="property" data-depth="0">
+      <td data-ice="name" data-depth="0">equal</td>
+      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">Function</a></span></td>
+      <td data-ice="appendix"><ul><li>optional</li></ul></td>
+      <td data-ice="description"><p>equality function</p>
 </td>
     </tr>
 </tbody>
@@ -1063,11 +1070,11 @@ O(N * log(N))</p>
     
     
     
-    <span data-ice="name">lastIndexOf</span><span data-ice="signature">(target: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></span></span>
+    <span data-ice="name">lastIndexOf</span><span data-ice="signature">(target: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></span>, equal: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">Function</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/bit.js.html#lineNumber234">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/bit.js.html#lineNumber236">source</a></span></span>
     </span>
   </h3>
 
@@ -1092,6 +1099,13 @@ O(N * log(N))</p>
       <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></span></td>
       <td data-ice="appendix"></td>
       <td data-ice="description"><p>value</p>
+</td>
+    </tr>
+<tr data-ice="property" data-depth="0">
+      <td data-ice="name" data-depth="0">equal</td>
+      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">Function</a></span></td>
+      <td data-ice="appendix"><ul><li>optional</li></ul></td>
+      <td data-ice="description"><p>equality function</p>
 </td>
     </tr>
 </tbody>
@@ -1137,7 +1151,7 @@ O(N * log(N))</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/bit.js.html#lineNumber258">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/bit.js.html#lineNumber260">source</a></span></span>
     </span>
   </h3>
 
@@ -1479,7 +1493,7 @@ O(log(N))</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/bit.js.html#lineNumber295">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/bit.js.html#lineNumber297">source</a></span></span>
     </span>
   </h3>
 
@@ -1531,7 +1545,7 @@ O(N)</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/bit.js.html#lineNumber286">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/bit.js.html#lineNumber288">source</a></span></span>
     </span>
   </h3>
 
