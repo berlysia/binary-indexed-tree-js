@@ -372,6 +372,18 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/bit.js~binaryindexedtree#indexof",
+    "class/src/bit.js~BinaryIndexedTree.html#instance-method-indexOf",
+    "src/bit.js~BinaryIndexedTree#indexOf",
+    "method"
+  ],
+  [
+    "src/bit.js~binaryindexedtree#lastindexof",
+    "class/src/bit.js~BinaryIndexedTree.html#instance-method-lastIndexOf",
+    "src/bit.js~BinaryIndexedTree#lastIndexOf",
+    "method"
+  ],
+  [
     "src/bit.js~binaryindexedtree#length",
     "class/src/bit.js~BinaryIndexedTree.html#instance-get-length",
     "src/bit.js~BinaryIndexedTree#length",
@@ -387,6 +399,12 @@ window.esdocSearchIndex = [
     "src/bit.js~binaryindexedtree#original",
     "class/src/bit.js~BinaryIndexedTree.html#instance-method-original",
     "src/bit.js~BinaryIndexedTree#original",
+    "method"
+  ],
+  [
+    "src/bit.js~binaryindexedtree#prefix",
+    "class/src/bit.js~BinaryIndexedTree.html#instance-method-prefix",
+    "src/bit.js~BinaryIndexedTree#prefix",
     "method"
   ],
   [

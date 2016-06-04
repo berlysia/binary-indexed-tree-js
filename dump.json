@@ -10,31 +10,10 @@
     "access": null,
     "description": null,
     "lineNumber": 1,
-    "content": "\"use strict\";\nconst assert = require('assert');\n\nfunction isOdd(num) {\n    return num & 1;\n}\n\nfunction _comp(a, b) {\n    return a < b;\n}\n\nfunction _wrap(fn) {\n    return (a, b) => !fn(b, a);\n}\n\nfunction checkRange(x, end) {\n    return 0 <= x && x < end;\n}\n\nfunction checkPowerOfTwo(num) {\n    if (num === 0) return false;\n    return (num & (num - 1)) === 0;\n}\n\nfunction mostSignificantBit(num) {\n    num |= (num >> 1);\n    num |= (num >> 2);\n    num |= (num >> 4);\n    num |= (num >> 8);\n    num |= (num >> 16);\n    num |= (num >> 32);\n    return num - (num >> 1);\n}\n\nfunction leastSignificantBit(num) {\n    return num & (-num);\n}\n\n// lowest common ancestor\nfunction lowestCommonAncestor(a, b) {\n    while(a % 2) a /= 2;\n    while(b % 2) b /= 2;\n    return a < b ? a : b;\n}\n\n/**\n * BinaryIndexedTree implementation\n */\nexport default class BinaryIndexedTree {\n\n    /**\n     * @param {number} size\n     */\n    constructor(size) {\n        this._bit = Array(size).fill(0);\n    }\n\n    /**\n     * @param {Array<number>} seed - BIT will be built from this array\n     * @returns {BinaryIndexedTree} instance\n     * O(N)\n     */\n    static build(seed) {\n        const ret = new BinaryIndexedTree(seed.length);\n        for(let i = 0, l = seed.length; i < l; ++i) {\n            ret._bit[i] = seed[i];\n        }\n        for(let i = 0, l = seed.length - 1; i < l; ++i) {\n            const t = i | (i + 1);\n            if(t <= l) {\n                ret._bit[t] += ret._bit[i];\n            }\n        }\n        return ret;\n    }\n\n    /**\n     * @returns {number} size of BIT\n     */\n    get length() {\n        return this._bit.length;\n    }\n\n    /**\n     * @param {number} idx - should be less than size of BIT\n     * @param {number} val\n     * @returns {boolean} successfully added or not\n     * O(log(N))\n     */\n    add(idx, val) {\n        if (!checkRange(idx, this.length)) return false;\n        for(let x = idx, l = this.length; x < l; x |= x + 1) {\n            this._bit[x] += val;\n        }\n        return true;\n    }\n\n    /**\n     * @param {number} idx - should be less than size of BIT\n     * @param {number} val\n     * @returns {boolean} successfully replaced or not\n     * O(log(N))\n     */\n    replace(idx, val) {\n        if (!checkRange(idx, this.length)) return false;\n        const diff = val - this.original(idx);\n        return this.add(idx, diff);\n    }\n\n    /**\n     * @param {number} idx - should be less than size of BIT\n     * @returns {number} original value of array\n     * O(log(N))\n     */\n    original(idx) {\n        if (!checkRange(idx, this.length)) return undefined;\n        if (idx === 0) return this._bit[0];\n        let ans = 0;\n        const lca = lowestCommonAncestor(idx, idx - 1);\n        for(let x = idx; x >= lca; x = (x & (x + 1)) - 1) {\n            ans += this._bit[x];\n        }\n        for(let x = idx - 1; x >= lca; x = (x & (x + 1)) - 1) {\n            ans -= this._bit[x];\n        }\n        return ans;\n    }\n\n    /**\n     * @param {number} idx - should be less than size of BIT\n     * @returns {number} sum of range [0..idx]\n     * O(log(N))\n     */\n    get(idx) {\n        if (!checkRange(idx, this.length)) return undefined;\n        let ans = 0;\n        for(let x = idx; x >= 0; x = (x & (x + 1)) - 1) {\n            ans += this._bit[x];\n        }\n        return ans;\n    }\n\n    /**\n     * @returns {number} sum of range [0..size-1]\n     * O(log(N))\n     */\n    sum() {\n        if(this.length === 0) return 0;\n        return this.get(this.length - 1);\n    }\n\n    /**\n     * linear search.\n     * @param {Function} check function\n     * @returns {number} value of first target, or undefined\n     */\n    find(check) {\n        if(typeof check !== 'function') throw new TypeError();\n\n        let value = this._bit[0];\n        if(check(value)) return value;\n\n        for (let x = 1, l = this.length; x < l; ++x) {\n            value += this._bit[x];\n            if (isOdd(x)) {\n                if (checkPowerOfTwo(x + 1)) {\n                    value -= this.get(x - 1);\n                } else {\n                    value -= this._bit[x - 1];\n                }\n            }\n\n            if(check(value)) return value;\n        }\n\n        return undefined;\n    }\n\n    /**\n     * linear search.\n     * @param {Function} check function\n     * @returns {number} index of first target, or -1\n     */\n    findIndex(check) {\n        if(typeof check !== 'function') throw new TypeError();\n\n        let value = this._bit[0];\n        if(check(value)) return 0;\n\n        for (let x = 1, l = this.length; x < l; ++x) {\n            value += this._bit[x];\n            if (isOdd(x)) {\n                if (checkPowerOfTwo(x + 1)) {\n                    value -= this.get(x - 1);\n                } else {\n                    value -= this._bit[x - 1];\n                }\n            }\n\n            if(check(value)) return x;\n        }\n\n        return -1;\n    }\n\n    /**\n     * find lower bound.\n     * SEQUENCE SHOULD BE INCREASING IN ORDER (GIVEN BY COMPERATOR).\n     * IF ANY ITEM HAS MINUS VALUE, THIS METHOD WILL NOT WORK.\n     * @param {number} target\n     * @param {Function} [comp]\n     * @returns {number} index of lower-bound\n     * O(log(N))\n     */\n    lowerBound(target, comp) {\n        const length = this.length;\n        if(typeof comp !== 'function') comp = _comp;\n\n        let ans = 0, x = mostSignificantBit(length) * 2;\n        while(x && x === (x | 0)) {\n            const lsb = leastSignificantBit(x);\n            if(checkRange(x, length + 1) && comp(this._bit[x - 1], target)) {\n                target -= this._bit[x - 1];\n                ans = x;\n                x += lsb / 2;\n            } else {\n                x += (lsb / 2) - lsb;\n            }\n        }\n\n        return ans;\n    }\n\n    /**\n     * find upper bound.\n     * SEQUENCE SHOULD BE INCREASING IN ORDER (GIVEN BY COMPERATOR).\n     * IF ANY ITEM HAS MINUS VALUE, THIS METHOD WILL NOT WORK.\n     * @param {number} target\n     * @param {Function} [comp]\n     * @returns {number} index of upper-bound\n     * O(log(N))\n     */\n    upperBound(target, comp) {\n        if(typeof comp !== 'function') comp = _comp;\n        return this.lowerBound(target, _wrap(comp));\n    }\n\n    /**\n     * @returns {Array<number>} array of cusum\n     * O(N)\n     */\n    toArray() {\n        const result = Array(this.length).fill(0);\n\n        for(let i = 0, l = this.length; i < l; ++i) {\n            result[i] = this._bit[i];\n        }\n\n        for(let i = 2, l = this.length; i < l; ++i) {\n            if(isOdd(i)) {\n                if(!checkPowerOfTwo(i + 1)) {\n                    result[i] += result[(i & (i + 1)) - 1];\n                }\n            } else {\n                result[i] += result[i - 1];\n            }\n        }\n\n        return result;\n    }\n}\n"
+    "content": "\"use strict\";\n\nfunction isOdd(num) {\n    return num & 1;\n}\n\nfunction _comp(a, b) {\n    return a < b;\n}\n\nfunction _equal(a, b) {\n    return a === b;\n}\n\nfunction _wrap(fn) {\n    return (a, b) => !fn(b, a);\n}\n\nfunction checkRange(x, end) {\n    return 0 <= x && x < end;\n}\n\nfunction checkPowerOfTwo(num) {\n    if (num === 0) return false;\n    return (num & (num - 1)) === 0;\n}\n\nfunction mostSignificantBit(num) {\n    num |= (num >> 1);\n    num |= (num >> 2);\n    num |= (num >> 4);\n    num |= (num >> 8);\n    num |= (num >> 16);\n    num |= (num >> 32);\n    return num - (num >> 1);\n}\n\nfunction leastSignificantBit(num) {\n    return num & (-num);\n}\n\nfunction lowestCommonAncestor(a, b) {\n    while(a % 2) a /= 2;\n    while(b % 2) b /= 2;\n    return a < b ? a : b;\n}\n\n/**\n * BinaryIndexedTree implementation\n */\nexport default class BinaryIndexedTree {\n\n    /**\n     * @param {number} size\n     */\n    constructor(size) {\n        this._bit = Array(size).fill(0);\n    }\n\n    /**\n     * @param {Array<number>} seed - BIT will be built from this array\n     * @returns {BinaryIndexedTree} instance\n     * O(N)\n     */\n    static build(seed) {\n        const ret = new BinaryIndexedTree(seed.length);\n        for(let i = 0, l = seed.length; i < l; ++i) {\n            ret._bit[i] = seed[i];\n        }\n        for(let i = 0, l = seed.length - 1; i < l; ++i) {\n            const t = i | (i + 1);\n            if(t <= l) {\n                ret._bit[t] += ret._bit[i];\n            }\n        }\n        return ret;\n    }\n\n    /**\n     * @returns {number} size of BIT\n     */\n    get length() {\n        return this._bit.length;\n    }\n\n    /**\n     * @param {number} idx - should be less than size of BIT\n     * @param {number} val\n     * @returns {boolean} successfully added or not\n     * O(log(N))\n     */\n    add(idx, val) {\n        if (!checkRange(idx, this.length)) return false;\n        for(let x = idx, l = this.length; x < l; x |= x + 1) {\n            this._bit[x] += val;\n        }\n        return true;\n    }\n\n    /**\n     * @param {number} idx - should be less than size of BIT\n     * @param {number} val\n     * @returns {boolean} successfully replaced or not\n     * O(log(N))\n     */\n    replace(idx, val) {\n        if (!checkRange(idx, this.length)) return false;\n        const diff = val - this.original(idx);\n        return this.add(idx, diff);\n    }\n\n    /**\n     * @param {number} idx - should be less than size of BIT\n     * @returns {number} original value of array\n     * O(log(N))\n     */\n    original(idx) {\n        if (!checkRange(idx, this.length)) return undefined;\n        if (idx === 0) return this._bit[0];\n        let ans = 0;\n        const lca = lowestCommonAncestor(idx, idx - 1);\n        for(let x = idx; x >= lca; x = (x & (x + 1)) - 1) {\n            ans += this._bit[x];\n        }\n        for(let x = idx - 1; x >= lca; x = (x & (x + 1)) - 1) {\n            ans -= this._bit[x];\n        }\n        return ans;\n    }\n\n    /**\n     * @param {number} idx - should be less than size of BIT\n     * @returns {number} sum of range [0..idx]\n     * O(log(N))\n     */\n    get(idx) {\n        if (!checkRange(idx, this.length)) return undefined;\n        let ans = 0;\n        for(let x = idx; x >= 0; x = (x & (x + 1)) - 1) {\n            ans += this._bit[x];\n        }\n        return ans;\n    }\n\n    /**\n     * @param {number} idx - should be less than size of BIT\n     * @returns {number} sum of range [0..idx)\n     * O(log(N))\n     */\n    prefix(idx) {\n        if (!checkRange(idx, this.length)) return undefined;\n        if (idx === 0) return 0;\n        return this.get(idx - 1);\n    }\n\n    /**\n     * @returns {number} sum of all\n     * O(log(N))\n     */\n    sum() {\n        if(this.length === 0) return 0;\n        return this.get(this.length - 1);\n    }\n\n    /**\n     * linear search.\n     * @param {Function} check function\n     * @returns {number} value of first target, or undefined\n     * O(N * log(N))\n     */\n    find(check) {\n        if(typeof check !== 'function') throw new TypeError();\n\n        let value = this._bit[0];\n        if(check(value, 0, this)) return value;\n\n        for (let idx = 1, l = this.length; idx < l; ++idx) {\n            value += this.original(idx);\n\n            if(check(value, idx, this)) return value;\n        }\n\n        return undefined;\n    }\n\n    /**\n     * linear search.\n     * @param {Function} check function\n     * @returns {number} index of first target, or -1\n     * O(N * log(N))\n     */\n    findIndex(check) {\n        if(typeof check !== 'function') throw new TypeError();\n\n        let value = this._bit[0];\n        if(check(value, 0, this)) return 0;\n\n        for (let idx = 1, l = this.length; idx < l; ++idx) {\n            value += this.original(idx);\n\n            if(check(value, idx, this)) return idx;\n        }\n\n        return -1;\n    }\n\n    /**\n     * linear search.\n     * @param {number} target value\n     * @returns {number} index of first target, or -1\n     * O(N * log(N))\n     */\n    indexOf(target, equal) {\n        if(typeof equal !== 'function') equal = _equal;\n\n        let value = this._bit[0];\n        if(equal(value, target)) return 0;\n\n        for (let idx = 1, l = this.length; idx < l; ++idx) {\n            value += this.original(idx);\n\n            if(equal(value, target)) return idx;\n        }\n\n        return -1;\n    }\n\n    /**\n     * linear search.\n     * @param {number} target value\n     * @returns {number} index of last target, or -1\n     * O(N * log(N))\n     */\n    lastIndexOf(target, equal) {\n        if(typeof equal !== 'function') equal = _equal;\n\n        let value = this.sum();\n        if(equal(value, target)) return this.length - 1;\n\n        for (let idx = this.length - 1; 0 < idx; --idx) {\n            value -= this.original(idx);\n\n            if(equal(value, target)) return idx - 1;\n        }\n\n        return -1;\n    }\n\n    /**\n     * find lower bound.\n     * SEQUENCE SHOULD BE INCREASING IN ORDER (GIVEN BY COMPERATOR).\n     * IF ANY ITEM HAS MINUS VALUE, THIS METHOD WILL NOT WORK.\n     * @param {number} target\n     * @param {Function} [comp]\n     * @returns {number} index of lower-bound\n     * O(log(N))\n     */\n    lowerBound(target, comp) {\n        const length = this.length;\n        if(typeof comp !== 'function') comp = _comp;\n\n        let ans = 0, x = mostSignificantBit(length) * 2;\n        while(x && x === (x | 0)) {\n            const lsb = leastSignificantBit(x);\n            if(checkRange(x, length + 1) && comp(this._bit[x - 1], target)) {\n                target -= this._bit[x - 1];\n                ans = x;\n                x += lsb / 2;\n            } else {\n                x += (lsb / 2) - lsb;\n            }\n        }\n\n        return ans;\n    }\n\n    /**\n     * find upper bound.\n     * SEQUENCE SHOULD BE INCREASING IN ORDER (GIVEN BY COMPERATOR).\n     * IF ANY ITEM HAS MINUS VALUE, THIS METHOD WILL NOT WORK.\n     * @param {number} target\n     * @param {Function} [comp]\n     * @returns {number} index of upper-bound\n     * O(log(N))\n     */\n    upperBound(target, comp) {\n        if(typeof comp !== 'function') comp = _comp;\n        return this.lowerBound(target, _wrap(comp));\n    }\n\n    /**\n     * @returns {Array<number>} array of cusum\n     * O(N)\n     */\n    toArray() {\n        const result = Array(this.length).fill(0);\n\n        for(let i = 0, l = this.length; i < l; ++i) {\n            result[i] = this._bit[i];\n        }\n\n        for(let i = 2, l = this.length; i < l; ++i) {\n            if(isOdd(i)) {\n                if(!checkPowerOfTwo(i + 1)) {\n                    result[i] += result[(i & (i + 1)) - 1];\n                }\n            } else {\n                result[i] += result[i - 1];\n            }\n        }\n\n        return result;\n    }\n}\n"
   },
   {
     "__docId__": 1,
-    "kind": "variable",
-    "static": true,
-    "variation": null,
-    "name": "assert",
-    "memberof": "src/bit.js",
-    "longname": "src/bit.js~assert",
-    "access": null,
-    "export": false,
-    "importPath": "binary-indexed-tree/src/bit.js",
-    "importStyle": null,
-    "description": null,
-    "lineNumber": 2,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 2,
     "kind": "function",
     "static": true,
     "variation": null,
@@ -46,7 +25,7 @@
     "importPath": "binary-indexed-tree/src/bit.js",
     "importStyle": null,
     "description": null,
-    "lineNumber": 4,
+    "lineNumber": 3,
     "undocument": true,
     "params": [
       {
@@ -64,7 +43,7 @@
     "generator": false
   },
   {
-    "__docId__": 3,
+    "__docId__": 2,
     "kind": "function",
     "static": true,
     "variation": null,
@@ -76,7 +55,43 @@
     "importPath": "binary-indexed-tree/src/bit.js",
     "importStyle": null,
     "description": null,
-    "lineNumber": 8,
+    "lineNumber": 7,
+    "undocument": true,
+    "params": [
+      {
+        "name": "a",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "b",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 3,
+    "kind": "function",
+    "static": true,
+    "variation": null,
+    "name": "_equal",
+    "memberof": "src/bit.js",
+    "longname": "src/bit.js~_equal",
+    "access": null,
+    "export": false,
+    "importPath": "binary-indexed-tree/src/bit.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 11,
     "undocument": true,
     "params": [
       {
@@ -112,7 +127,7 @@
     "importPath": "binary-indexed-tree/src/bit.js",
     "importStyle": null,
     "description": null,
-    "lineNumber": 12,
+    "lineNumber": 15,
     "undocument": true,
     "params": [
       {
@@ -142,7 +157,7 @@
     "importPath": "binary-indexed-tree/src/bit.js",
     "importStyle": null,
     "description": null,
-    "lineNumber": 16,
+    "lineNumber": 19,
     "undocument": true,
     "params": [
       {
@@ -178,7 +193,7 @@
     "importPath": "binary-indexed-tree/src/bit.js",
     "importStyle": null,
     "description": null,
-    "lineNumber": 20,
+    "lineNumber": 23,
     "undocument": true,
     "params": [
       {
@@ -208,7 +223,7 @@
     "importPath": "binary-indexed-tree/src/bit.js",
     "importStyle": null,
     "description": null,
-    "lineNumber": 25,
+    "lineNumber": 28,
     "undocument": true,
     "params": [
       {
@@ -238,7 +253,7 @@
     "importPath": "binary-indexed-tree/src/bit.js",
     "importStyle": null,
     "description": null,
-    "lineNumber": 35,
+    "lineNumber": 38,
     "undocument": true,
     "params": [
       {
@@ -268,7 +283,7 @@
     "importPath": "binary-indexed-tree/src/bit.js",
     "importStyle": null,
     "description": null,
-    "lineNumber": 40,
+    "lineNumber": 42,
     "undocument": true,
     "params": [
       {
@@ -304,7 +319,7 @@
     "importPath": "binary-indexed-tree/src/bit.js",
     "importStyle": "BinaryIndexedTree",
     "description": "BinaryIndexedTree implementation",
-    "lineNumber": 49,
+    "lineNumber": 51,
     "interface": false
   },
   {
@@ -317,7 +332,7 @@
     "longname": "src/bit.js~BinaryIndexedTree#constructor",
     "access": null,
     "description": "",
-    "lineNumber": 54,
+    "lineNumber": 56,
     "params": [
       {
         "nullable": null,
@@ -342,7 +357,7 @@
     "longname": "src/bit.js~BinaryIndexedTree#_bit",
     "access": null,
     "description": null,
-    "lineNumber": 55,
+    "lineNumber": 57,
     "undocument": true,
     "type": {
       "types": [
@@ -360,7 +375,7 @@
     "longname": "src/bit.js~BinaryIndexedTree.build",
     "access": null,
     "description": "",
-    "lineNumber": 63,
+    "lineNumber": 65,
     "unknown": [
       {
         "tagName": "@returns",
@@ -399,7 +414,7 @@
     "longname": "src/bit.js~BinaryIndexedTree#length",
     "access": null,
     "description": "",
-    "lineNumber": 80,
+    "lineNumber": 82,
     "unknown": [
       {
         "tagName": "@returns",
@@ -431,7 +446,7 @@
     "longname": "src/bit.js~BinaryIndexedTree#add",
     "access": null,
     "description": "",
-    "lineNumber": 90,
+    "lineNumber": 92,
     "unknown": [
       {
         "tagName": "@returns",
@@ -480,7 +495,7 @@
     "longname": "src/bit.js~BinaryIndexedTree#replace",
     "access": null,
     "description": "",
-    "lineNumber": 104,
+    "lineNumber": 106,
     "unknown": [
       {
         "tagName": "@returns",
@@ -529,7 +544,7 @@
     "longname": "src/bit.js~BinaryIndexedTree#original",
     "access": null,
     "description": "",
-    "lineNumber": 115,
+    "lineNumber": 117,
     "unknown": [
       {
         "tagName": "@returns",
@@ -568,7 +583,7 @@
     "longname": "src/bit.js~BinaryIndexedTree#get",
     "access": null,
     "description": "",
-    "lineNumber": 134,
+    "lineNumber": 136,
     "unknown": [
       {
         "tagName": "@returns",
@@ -602,16 +617,55 @@
     "kind": "method",
     "static": false,
     "variation": null,
+    "name": "prefix",
+    "memberof": "src/bit.js~BinaryIndexedTree",
+    "longname": "src/bit.js~BinaryIndexedTree#prefix",
+    "access": null,
+    "description": "",
+    "lineNumber": 150,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{number} sum of range [0..idx)\nO(log(N))"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "idx",
+        "description": "should be less than size of BIT"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "number"
+      ],
+      "spread": false,
+      "description": "sum of range [0..idx)\nO(log(N))"
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 20,
+    "kind": "method",
+    "static": false,
+    "variation": null,
     "name": "sum",
     "memberof": "src/bit.js~BinaryIndexedTree",
     "longname": "src/bit.js~BinaryIndexedTree#sum",
     "access": null,
     "description": "",
-    "lineNumber": 147,
+    "lineNumber": 160,
     "unknown": [
       {
         "tagName": "@returns",
-        "tagValue": "{number} sum of range [0..size-1]\nO(log(N))"
+        "tagValue": "{number} sum of all\nO(log(N))"
       }
     ],
     "params": [],
@@ -621,46 +675,7 @@
         "number"
       ],
       "spread": false,
-      "description": "sum of range [0..size-1]\nO(log(N))"
-    },
-    "generator": false
-  },
-  {
-    "__docId__": 20,
-    "kind": "method",
-    "static": false,
-    "variation": null,
-    "name": "find",
-    "memberof": "src/bit.js~BinaryIndexedTree",
-    "longname": "src/bit.js~BinaryIndexedTree#find",
-    "access": null,
-    "description": "linear search.",
-    "lineNumber": 157,
-    "unknown": [
-      {
-        "tagName": "@returns",
-        "tagValue": "{number} value of first target, or undefined"
-      }
-    ],
-    "params": [
-      {
-        "nullable": null,
-        "types": [
-          "Function"
-        ],
-        "spread": false,
-        "optional": false,
-        "name": "check",
-        "description": "function"
-      }
-    ],
-    "return": {
-      "nullable": null,
-      "types": [
-        "number"
-      ],
-      "spread": false,
-      "description": "value of first target, or undefined"
+      "description": "sum of all\nO(log(N))"
     },
     "generator": false
   },
@@ -669,16 +684,16 @@
     "kind": "method",
     "static": false,
     "variation": null,
-    "name": "findIndex",
+    "name": "find",
     "memberof": "src/bit.js~BinaryIndexedTree",
-    "longname": "src/bit.js~BinaryIndexedTree#findIndex",
+    "longname": "src/bit.js~BinaryIndexedTree#find",
     "access": null,
     "description": "linear search.",
-    "lineNumber": 184,
+    "lineNumber": 171,
     "unknown": [
       {
         "tagName": "@returns",
-        "tagValue": "{number} index of first target, or -1"
+        "tagValue": "{number} value of first target, or undefined\nO(N * log(N))"
       }
     ],
     "params": [
@@ -699,7 +714,7 @@
         "number"
       ],
       "spread": false,
-      "description": "index of first target, or -1"
+      "description": "value of first target, or undefined\nO(N * log(N))"
     },
     "generator": false
   },
@@ -708,12 +723,129 @@
     "kind": "method",
     "static": false,
     "variation": null,
+    "name": "findIndex",
+    "memberof": "src/bit.js~BinaryIndexedTree",
+    "longname": "src/bit.js~BinaryIndexedTree#findIndex",
+    "access": null,
+    "description": "linear search.",
+    "lineNumber": 192,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{number} index of first target, or -1\nO(N * log(N))"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "check",
+        "description": "function"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "number"
+      ],
+      "spread": false,
+      "description": "index of first target, or -1\nO(N * log(N))"
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 23,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "indexOf",
+    "memberof": "src/bit.js~BinaryIndexedTree",
+    "longname": "src/bit.js~BinaryIndexedTree#indexOf",
+    "access": null,
+    "description": "linear search.",
+    "lineNumber": 213,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{number} index of first target, or -1\nO(N * log(N))"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "target",
+        "description": "value"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "number"
+      ],
+      "spread": false,
+      "description": "index of first target, or -1\nO(N * log(N))"
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 24,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "lastIndexOf",
+    "memberof": "src/bit.js~BinaryIndexedTree",
+    "longname": "src/bit.js~BinaryIndexedTree#lastIndexOf",
+    "access": null,
+    "description": "linear search.",
+    "lineNumber": 234,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{number} index of last target, or -1\nO(N * log(N))"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "target",
+        "description": "value"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "number"
+      ],
+      "spread": false,
+      "description": "index of last target, or -1\nO(N * log(N))"
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 25,
+    "kind": "method",
+    "static": false,
+    "variation": null,
     "name": "lowerBound",
     "memberof": "src/bit.js~BinaryIndexedTree",
     "longname": "src/bit.js~BinaryIndexedTree#lowerBound",
     "access": null,
     "description": "find lower bound.\nSEQUENCE SHOULD BE INCREASING IN ORDER (GIVEN BY COMPERATOR).\nIF ANY ITEM HAS MINUS VALUE, THIS METHOD WILL NOT WORK.",
-    "lineNumber": 215,
+    "lineNumber": 258,
     "unknown": [
       {
         "tagName": "@returns",
@@ -753,7 +885,7 @@
     "generator": false
   },
   {
-    "__docId__": 23,
+    "__docId__": 26,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -762,7 +894,7 @@
     "longname": "src/bit.js~BinaryIndexedTree#upperBound",
     "access": null,
     "description": "find upper bound.\nSEQUENCE SHOULD BE INCREASING IN ORDER (GIVEN BY COMPERATOR).\nIF ANY ITEM HAS MINUS VALUE, THIS METHOD WILL NOT WORK.",
-    "lineNumber": 243,
+    "lineNumber": 286,
     "unknown": [
       {
         "tagName": "@returns",
@@ -802,7 +934,7 @@
     "generator": false
   },
   {
-    "__docId__": 24,
+    "__docId__": 27,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -811,7 +943,7 @@
     "longname": "src/bit.js~BinaryIndexedTree#toArray",
     "access": null,
     "description": "",
-    "lineNumber": 252,
+    "lineNumber": 295,
     "unknown": [
       {
         "tagName": "@returns",
@@ -830,7 +962,7 @@
     "generator": false
   },
   {
-    "__docId__": 26,
+    "__docId__": 29,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -843,7 +975,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 27,
+    "__docId__": 30,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -856,7 +988,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 28,
+    "__docId__": 31,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -869,7 +1001,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 29,
+    "__docId__": 32,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -882,7 +1014,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 30,
+    "__docId__": 33,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -895,7 +1027,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 31,
+    "__docId__": 34,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -908,7 +1040,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 32,
+    "__docId__": 35,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -921,7 +1053,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 33,
+    "__docId__": 36,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -934,7 +1066,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 34,
+    "__docId__": 37,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -947,7 +1079,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 35,
+    "__docId__": 38,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -960,7 +1092,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 36,
+    "__docId__": 39,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -973,7 +1105,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 37,
+    "__docId__": 40,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -986,7 +1118,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 38,
+    "__docId__": 41,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -999,7 +1131,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 39,
+    "__docId__": 42,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1012,7 +1144,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 40,
+    "__docId__": 43,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1025,7 +1157,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 41,
+    "__docId__": 44,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1038,7 +1170,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 42,
+    "__docId__": 45,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1051,7 +1183,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 43,
+    "__docId__": 46,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1064,7 +1196,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 44,
+    "__docId__": 47,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1077,7 +1209,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 45,
+    "__docId__": 48,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1090,7 +1222,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 46,
+    "__docId__": 49,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1103,7 +1235,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 47,
+    "__docId__": 50,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1116,7 +1248,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 48,
+    "__docId__": 51,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1129,7 +1261,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 49,
+    "__docId__": 52,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1142,7 +1274,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 50,
+    "__docId__": 53,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1155,7 +1287,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 51,
+    "__docId__": 54,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1168,7 +1300,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 52,
+    "__docId__": 55,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1181,7 +1313,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 53,
+    "__docId__": 56,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1194,7 +1326,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 54,
+    "__docId__": 57,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1207,7 +1339,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 55,
+    "__docId__": 58,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1220,7 +1352,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 56,
+    "__docId__": 59,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1233,7 +1365,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 57,
+    "__docId__": 60,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1246,7 +1378,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 58,
+    "__docId__": 61,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1259,7 +1391,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 59,
+    "__docId__": 62,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1272,7 +1404,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 60,
+    "__docId__": 63,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1285,7 +1417,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 61,
+    "__docId__": 64,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1298,7 +1430,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 62,
+    "__docId__": 65,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1311,7 +1443,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 63,
+    "__docId__": 66,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1324,7 +1456,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 64,
+    "__docId__": 67,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1337,7 +1469,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 65,
+    "__docId__": 68,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1350,7 +1482,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 66,
+    "__docId__": 69,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1363,7 +1495,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 67,
+    "__docId__": 70,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1376,7 +1508,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 68,
+    "__docId__": 71,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1389,7 +1521,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 69,
+    "__docId__": 72,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1402,7 +1534,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 70,
+    "__docId__": 73,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1415,7 +1547,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 71,
+    "__docId__": 74,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1428,7 +1560,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 72,
+    "__docId__": 75,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1441,7 +1573,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 74,
+    "__docId__": 77,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1454,7 +1586,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 75,
+    "__docId__": 78,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1467,7 +1599,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 76,
+    "__docId__": 79,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1480,7 +1612,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 77,
+    "__docId__": 80,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1493,7 +1625,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 78,
+    "__docId__": 81,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1506,7 +1638,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 79,
+    "__docId__": 82,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1519,7 +1651,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 80,
+    "__docId__": 83,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1532,7 +1664,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 81,
+    "__docId__": 84,
     "kind": "external",
     "static": true,
     "variation": null,

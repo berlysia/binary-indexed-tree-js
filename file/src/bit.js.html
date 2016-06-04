@@ -39,7 +39,6 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/bit.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">&quot;use strict&quot;;
-const assert = require(&apos;assert&apos;);
 
 function isOdd(num) {
     return num &amp; 1;
@@ -47,6 +46,10 @@ function isOdd(num) {
 
 function _comp(a, b) {
     return a &lt; b;
+}
+
+function _equal(a, b) {
+    return a === b;
 }
 
 function _wrap(fn) {
@@ -76,7 +79,6 @@ function leastSignificantBit(num) {
     return num &amp; (-num);
 }
 
-// lowest common ancestor
 function lowestCommonAncestor(a, b) {
     while(a % 2) a /= 2;
     while(b % 2) b /= 2;
@@ -181,7 +183,18 @@ export default class BinaryIndexedTree {
     }
 
     /**
-     * @returns {number} sum of range [0..size-1]
+     * @param {number} idx - should be less than size of BIT
+     * @returns {number} sum of range [0..idx)
+     * O(log(N))
+     */
+    prefix(idx) {
+        if (!checkRange(idx, this.length)) return undefined;
+        if (idx === 0) return 0;
+        return this.get(idx - 1);
+    }
+
+    /**
+     * @returns {number} sum of all
      * O(log(N))
      */
     sum() {
@@ -193,24 +206,18 @@ export default class BinaryIndexedTree {
      * linear search.
      * @param {Function} check function
      * @returns {number} value of first target, or undefined
+     * O(N * log(N))
      */
     find(check) {
         if(typeof check !== &apos;function&apos;) throw new TypeError();
 
         let value = this._bit[0];
-        if(check(value)) return value;
+        if(check(value, 0, this)) return value;
 
-        for (let x = 1, l = this.length; x &lt; l; ++x) {
-            value += this._bit[x];
-            if (isOdd(x)) {
-                if (checkPowerOfTwo(x + 1)) {
-                    value -= this.get(x - 1);
-                } else {
-                    value -= this._bit[x - 1];
-                }
-            }
+        for (let idx = 1, l = this.length; idx &lt; l; ++idx) {
+            value += this.original(idx);
 
-            if(check(value)) return value;
+            if(check(value, idx, this)) return value;
         }
 
         return undefined;
@@ -220,24 +227,60 @@ export default class BinaryIndexedTree {
      * linear search.
      * @param {Function} check function
      * @returns {number} index of first target, or -1
+     * O(N * log(N))
      */
     findIndex(check) {
         if(typeof check !== &apos;function&apos;) throw new TypeError();
 
         let value = this._bit[0];
-        if(check(value)) return 0;
+        if(check(value, 0, this)) return 0;
 
-        for (let x = 1, l = this.length; x &lt; l; ++x) {
-            value += this._bit[x];
-            if (isOdd(x)) {
-                if (checkPowerOfTwo(x + 1)) {
-                    value -= this.get(x - 1);
-                } else {
-                    value -= this._bit[x - 1];
-                }
-            }
+        for (let idx = 1, l = this.length; idx &lt; l; ++idx) {
+            value += this.original(idx);
 
-            if(check(value)) return x;
+            if(check(value, idx, this)) return idx;
+        }
+
+        return -1;
+    }
+
+    /**
+     * linear search.
+     * @param {number} target value
+     * @returns {number} index of first target, or -1
+     * O(N * log(N))
+     */
+    indexOf(target, equal) {
+        if(typeof equal !== &apos;function&apos;) equal = _equal;
+
+        let value = this._bit[0];
+        if(equal(value, target)) return 0;
+
+        for (let idx = 1, l = this.length; idx &lt; l; ++idx) {
+            value += this.original(idx);
+
+            if(equal(value, target)) return idx;
+        }
+
+        return -1;
+    }
+
+    /**
+     * linear search.
+     * @param {number} target value
+     * @returns {number} index of last target, or -1
+     * O(N * log(N))
+     */
+    lastIndexOf(target, equal) {
+        if(typeof equal !== &apos;function&apos;) equal = _equal;
+
+        let value = this.sum();
+        if(equal(value, target)) return this.length - 1;
+
+        for (let idx = this.length - 1; 0 &lt; idx; --idx) {
+            value -= this.original(idx);
+
+            if(equal(value, target)) return idx - 1;
         }
 
         return -1;
