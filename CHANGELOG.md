@@ -1,3 +1,19 @@
+<a name="0.4.0"></a>
+# [0.4.0](https://github.com/berlysia/binary-indexed-tree-js/compare/v0.3.4...v0.4.0) (2016-06-04)
+
+
+### Bug Fixes
+
+* **bit:** Fix BIT#find, BIT#findIndex([537c8c1](https://github.com/berlysia/binary-indexed-tree-js/commit/537c8c1))
+
+
+### Features
+
+* **bit:** Implement BIT#indexOf, BIT#lastIndexOf([e9595be](https://github.com/berlysia/binary-indexed-tree-js/commit/e9595be))
+* **bit:** Implement BIT#prefix([7332501](https://github.com/berlysia/binary-indexed-tree-js/commit/7332501))
+
+
+
 <a name="0.3.4"></a>
 ## [0.3.4](https://github.com/berlysia/binary-indexed-tree-js/compare/v0.3.3...v0.3.4) (2016-06-02)
 
