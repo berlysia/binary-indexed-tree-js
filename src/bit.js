@@ -1,49 +1,16 @@
 "use strict";
 
-function isOdd(num) {
-    return num & 1;
-}
-
-function _comp(a, b) {
-    return a < b;
-}
-
-function _equal(a, b) {
-    return a === b;
-}
-
-function _wrap(fn) {
-    return (a, b) => !fn(b, a);
-}
-
-function checkRange(x, end) {
-    return 0 <= x && x < end;
-}
-
-function checkPowerOfTwo(num) {
-    if (num === 0) return false;
-    return (num & (num - 1)) === 0;
-}
-
-function mostSignificantBit(num) {
-    num |= (num >> 1);
-    num |= (num >> 2);
-    num |= (num >> 4);
-    num |= (num >> 8);
-    num |= (num >> 16);
-    num |= (num >> 32);
-    return num - (num >> 1);
-}
-
-function leastSignificantBit(num) {
-    return num & (-num);
-}
-
-function lowestCommonAncestor(a, b) {
-    while(a % 2) a /= 2;
-    while(b % 2) b /= 2;
-    return a < b ? a : b;
-}
+import {
+    isOdd,
+    _comp,
+    _equal,
+    _wrap,
+    checkRange,
+    checkPowerOfTwo,
+    mostSignificantBit,
+    leastSignificantBit,
+    lowestCommonAncestor
+} from "./util";
 
 /**
  * BinaryIndexedTree implementation
