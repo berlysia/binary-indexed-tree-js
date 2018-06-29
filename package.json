@@ -7,7 +7,7 @@
     "test": "mocha test/",
     "build": "NODE_ENV=production babel src --out-dir lib --source-maps",
     "watch": "babel src --out-dir lib --watch --source-maps",
-    "prepublish": "npm run --if-present changelog && git add CHANGELOG.md && git commit -m 'docs(CHANGELOG): Update' && npm run --if-present doc && npm run --if-present build",
+    "prepublishOnly": "npm run --if-present changelog && git add CHANGELOG.md && git commit -m 'docs(CHANGELOG): Update' && npm run --if-present doc && npm run --if-present build",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
     "doc": "documentation readme --access undefined src/bit.js --section \"API\""
   },
