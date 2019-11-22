@@ -4,7 +4,7 @@
   "description": "Binary Indexed Tree(aka Fenwick Tree) implementation",
   "main": "lib/bit.js",
   "scripts": {
-    "test": "mocha test/",
+    "test": "mocha",
     "build": "NODE_ENV=production babel src --out-dir lib --source-maps",
     "watch": "babel src --out-dir lib --watch --source-maps",
     "prepublishOnly": "npm run --if-present changelog && git add CHANGELOG.md && git commit -m 'docs(CHANGELOG): Update' && npm run --if-present doc && npm run --if-present build",
