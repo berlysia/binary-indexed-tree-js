@@ -1,1 +1,1 @@
---reporter dot --compilers js:babel-register
+--reporter dot --require @babel/register
