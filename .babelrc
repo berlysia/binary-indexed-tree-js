@@ -1,16 +1,8 @@
 {
-  "presets": [
-    "es2015"
-  ],
-  "plugins": [
-    "add-module-exports"
-  ],
+  "presets": ["@babel/env"],
   "env": {
     "development": {
-      "presets": [
-        "jsdoc-to-assert",
-        "power-assert"
-      ]
+      "presets": ["jsdoc-to-assert", "power-assert"]
     }
   }
 }
