@@ -25,7 +25,7 @@ jobs:
       - run: yarn install --frozen-lockfile --check-files
         env:
           CI: true
-      - run: yarn build --if-present
+      - run: yarn build
         env:
           CI: true
       - run: yarn test
