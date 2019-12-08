@@ -17,9 +17,9 @@
   "author": "berlysia",
   "license": "MIT",
   "devDependencies": {
-    "@babel/cli": "7.7.4",
-    "@babel/core": "7.7.4",
-    "@babel/preset-env": "7.7.4",
+    "@babel/cli": "7.7.5",
+    "@babel/core": "7.7.5",
+    "@babel/preset-env": "7.7.6",
     "@babel/register": "7.7.4",
     "babel-preset-jsdoc-to-assert": "5.0.0",
     "babel-preset-power-assert": "3.0.0",
