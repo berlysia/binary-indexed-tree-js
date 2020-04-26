@@ -24,7 +24,7 @@
     "babel-preset-jsdoc-to-assert": "5.0.0",
     "babel-preset-power-assert": "3.0.0",
     "gh-pages": "2.2.0",
-    "mocha": "7.1.1",
+    "mocha": "7.1.2",
     "power-assert": "1.6.1",
     "random-js": "2.1.0"
   },
