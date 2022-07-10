@@ -1,40 +1,26 @@
 {
   "name": "binary-indexed-tree",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Binary Indexed Tree(aka Fenwick Tree) implementation",
-  "main": "lib/bit.js",
   "scripts": {
-    "test": "mocha",
-    "build": "NODE_ENV=production babel src --out-dir lib --source-maps",
-    "watch": "babel src --out-dir lib --watch --source-maps",
-    "prepublishOnly": "npm run --if-present changelog && git add CHANGELOG.md && git commit -m 'docs(CHANGELOG): Update' && npm run --if-present doc && npm run --if-present build",
-    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
-    "doc": "documentation readme --access undefined src/bit.js --section \"API\""
+    "start": "vite",
+    "build": "vite build",
+    "test": "vitest"
   },
-  "files": [
-    "lib/"
-  ],
-  "author": "berlysia",
+  "main": "./dist/index.umd.js",
+  "module": "./dist/index.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/index.es.js",
+      "require": "./dist/index.umd.js"
+    }
+  },
+  "author": "berlysia, John Leung",
   "license": "MIT",
   "devDependencies": {
-    "@babel/cli": "7.18.6",
-    "@babel/core": "7.18.6",
-    "@babel/preset-env": "7.18.6",
-    "@babel/register": "7.18.6",
-    "babel-preset-jsdoc-to-assert": "5.0.0",
-    "babel-preset-power-assert": "3.0.0",
-    "gh-pages": "2.2.0",
-    "mocha": "7.2.0",
-    "power-assert": "1.6.1",
-    "random-js": "2.1.0"
+    "vite": "^2.9.12",
+    "vitest": "^0.18.0"
   },
   "dependencies": {},
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/berlysia/binary-indexed-tree-js.git"
-  },
-  "bugs": {
-    "url": "https://github.com/berlysia/binary-indexed-tree-js/issues"
-  },
-  "homepage": "https://github.com/berlysia/binary-indexed-tree-js#readme"
+  "homepage": "https://github.com/fuzzthink/binary-indexed-tree-js#readme"
 }

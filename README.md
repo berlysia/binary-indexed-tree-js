@@ -2,11 +2,11 @@
 
 Binary Indexed Tree(aka Fenwick Tree) implementation
 
+This fork removes babel and other dependencies, shaving yarn.lock from 137k to 15k (10k if w/o vitest).
+
 ## Install
 
-Install with [npm](https://www.npmjs.com/):
-
-    $ npm install binary-indexed-tree
+    $ yarn add "https://github.com/fuzzthink/binary-indexed-tree-js/tarball/v0.4.1"
 
 ## BIT?
 

@@ -1,51 +1,42 @@
-"use strict";
-const assert = require("power-assert");
-import { Random, MersenneTwister19937 } from "random-js";
-import BIT from "../src/bit";
+import { describe, it, assert, beforeEach } from 'vitest'
+import BIT from '../src/bit'
 
-const maxArraySize = 7;
-const randomSeed = [75938205, 57102950, 91702362];
+const maxSize = 2
+const randomSeed = [75938205, 57102950, 91702362]
 
 describe("sequencial test", function() {
-  describe(`with size = 0`, basicTest.bind(null, createSequencial(0)));
+  it(`with size = 0`, basicTest(zeroTo(0)))
 
-  for (let size = 1, i = 0, l = maxArraySize; i < l; ++i, size *= 2) {
-    describe(
-      `with size = ${size}`,
-      basicTest.bind(null, createSequencial(size))
-    );
+  for (let size = 1, i = 0, l = maxSize; i < l; ++i, size *= 2) {
+    it(`with size = ${size}`,
+      basicTest(zeroTo(size))
+    )
   }
-});
+})
 
 describe("random test", function() {
-  randomSeed.forEach(seed => {
-    for (let size = 1, i = 0, l = maxArraySize; i < l; ++i, size *= 2) {
-      describe(
-        `with size = ${size}`,
-        basicTest.bind(null, createRandom(size, seed))
-      );
+  for (let seed of randomSeed) {
+    for (let size = 1, i = 0, l = maxSize; i < l; ++i, size *= 2) {
+      it(`with size = ${size}`,
+        basicTest(randomInts(size, seed))
+      )
     }
-  });
-});
+  }
+})
 
 function lowerBoundExpected(cusum, func) {
   let i = cusum.findIndex(func);
-  if (!func(cusum[cusum.length - 1])) return cusum.length;
+  if (!func(cusum[cusum.length - 1]))
+    return cusum.length;
   return i;
 }
 
-function createSequencial(size) {
-  const ret = Array(size);
-  for (let i = 0; i < size; ++i) ret[i] = i;
-  return ret;
+function zeroTo(size) {
+  return Array.from({length: size}, (_, i) => i)
 }
 
-function createRandom(size, seed) {
-  const ret = Array(size);
-  const max = (Number.MAX_SAFE_INTEGER / size) | 0;
-  const random = new Random(MersenneTwister19937.seed(seed));
-  for (let i = 0; i < size; ++i) ret[i] = random.integer(0, max);
-  return ret;
+function randomInts(size, seed) {
+  return Array.from({length: size}, () => Math.floor(Math.random() * seed))
 }
 
 function basicTest(seed) {
@@ -91,7 +82,7 @@ function basicTest(seed) {
     assert(bit.get(-1) === undefined);
   });
 
-  describe("#find", function() {
+  it("#find", function() {
     for (let i = 0, l = size; i < l; ++i) {
       it(`works with each item`, function() {
         const target = cusum[i];
@@ -101,9 +92,9 @@ function basicTest(seed) {
         assert(cusum.find(fn) === bit.find(fn), message);
       });
     }
-  });
+  })
 
-  describe("#findIndex", function() {
+  it("#findIndex", function() {
     for (let i = 0, l = size; i < l; ++i) {
       it(`works with each item`, function() {
         const target = cusum[i];
@@ -115,32 +106,30 @@ function basicTest(seed) {
     }
   });
 
-  describe("#indexOf", function() {
+  it("#indexOf", function() {
     for (let i = 0, l = size; i < l; ++i) {
       it(`works with each item`, function() {
         const target = cusum[i];
         const message = `target: ${target}`;
-        const fn = x => x > target;
 
         assert(cusum.indexOf(target) === bit.indexOf(target), message);
       });
     }
   });
 
-  describe("#lastIndexOf", function() {
+  it("#lastIndexOf", function() {
     for (let i = 0, l = size; i < l; ++i) {
       it(`works with each item`, function() {
         const target = cusum[i];
         const message = `target: ${target}`;
-        const fn = x => x > target;
 
         assert(cusum.lastIndexOf(target) === bit.lastIndexOf(target), message);
       });
     }
   });
 
-  describe("#lowerBound, #upperBound", function() {
-    describe("each item", function() {
+  it("#lowerBound, #upperBound", function() {
+    it("each item", function() {
       for (let i = 0, l = size; i < l; ++i) {
         it("works", function() {
           const target = cusum[i];
@@ -184,7 +173,6 @@ function basicTest(seed) {
     if (2 < size) {
       it("custom comperator", function() {
         const comp = (a, b) => a <= b;
-
         const target = (size / 2) | 0;
 
         const lb = bit.lowerBound(target);
