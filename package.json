@@ -21,6 +21,6 @@
     "vite": "^2.9.12",
     "vitest": "^0.18.0"
   },
-  "dependencies": {},
+  "packageManager": "yarn@3.2.1",
   "homepage": "https://github.com/fuzzthink/binary-indexed-tree-js#readme"
 }

@@ -35,20 +35,20 @@ function zeroTo(size) {
   return Array.from({length: size}, (_, i) => i)
 }
 
-function randomInts(size, seed) {
+function randomInts(size, seed=1) {
   return Array.from({length: size}, () => Math.floor(Math.random() * seed))
 }
 
-function basicTest(seed) {
+function basicTest(ints=[]) {
   let bit,
     cusum,
-    size = seed.length;
+    size = ints.length;
   beforeEach(function() {
     bit = new BIT(size);
     for (let i = 0, l = size; i < l; ++i) {
-      bit.add(i, seed[i]);
+      bit.add(i, ints[i]);
     }
-    cusum = seed.reduce(
+    cusum = ints.reduce(
       (acc, x, i) => (acc.push(i ? x + acc[i - 1] : x), acc),
       []
     );
