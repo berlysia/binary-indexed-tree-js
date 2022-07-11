@@ -15,7 +15,7 @@
       "require": "./dist/index.umd.js"
     }
   },
-  "author": "berlysia, John Leung",
+  "author": "berlysia",
   "license": "MIT",
   "devDependencies": {
     "vite": "^2.9.12",
