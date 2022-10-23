@@ -4,9 +4,13 @@ Binary Indexed Tree(aka Fenwick Tree) implementation
 
 ## Install
 
-Install with yarn (or [npm](https://www.npmjs.com/):
+Install with [yarn](https://yarnpkg.com/getting-started/install)
 
-    $ yarn install binary-indexed-tree
+    $ yarn add binary-indexed-tree
+
+Or with [npm](https://www.npmjs.com/)
+
+    $ npm install binary-indexed-tree
 
 ## BIT?
 
@@ -174,7 +178,7 @@ Read the [CHANGELOG](https://github.com/berlysia/binary-indexed-tree-js/blob/mas
 
 ## Running tests
 
-Install devDependencies and Run `npm test`:
+Install devDependencies and Run `npm test` or `yarn test`:
 
     $ npm -d it
 

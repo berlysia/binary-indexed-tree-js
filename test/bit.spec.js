@@ -12,7 +12,7 @@ describe("sequencial test", function() {
       basicTest(zeroTo(size))
     )
   }
-})
+});
 
 describe("random test", function() {
   for (let seed of randomSeed) {
@@ -22,7 +22,7 @@ describe("random test", function() {
       )
     }
   }
-})
+});
 
 function lowerBoundExpected(cusum, func) {
   let i = cusum.findIndex(func);
@@ -35,11 +35,11 @@ function zeroTo(size) {
   return Array.from({length: size}, (_, i) => i)
 }
 
-function randomInts(size, seed=1) {
-  return Array.from({length: size}, () => Math.floor(Math.random() * seed))
+function randomInts(size, maxValue) {
+  return Array.from({length: size}, () => Math.floor(Math.random() * maxValue))
 }
 
-function basicTest(ints=[]) {
+function basicTest(ints) {
   let bit,
     cusum,
     size = ints.length;
@@ -62,7 +62,7 @@ function basicTest(ints=[]) {
 
   it("#original - original values", function() {
     for (let i = 0, l = size; i < l; ++i) {
-      assert(bit.original(i) === seed[i]);
+      assert(bit.original(i) === ints[i]);
     }
   });
 
@@ -82,56 +82,56 @@ function basicTest(ints=[]) {
     assert(bit.get(-1) === undefined);
   });
 
-  it("#find", function() {
-    for (let i = 0, l = size; i < l; ++i) {
-      it(`works with each item`, function() {
+  describe("#find", function() {
+    it(`works with each item`, function() {
+      for (let i = 0, l = size; i < l; ++i) {
         const target = cusum[i];
         const message = `target: ${target}`;
         const fn = x => x > target;
 
         assert(cusum.find(fn) === bit.find(fn), message);
-      });
-    }
+      }
+    });
   })
 
-  it("#findIndex", function() {
-    for (let i = 0, l = size; i < l; ++i) {
-      it(`works with each item`, function() {
+  describe("#findIndex", function() {
+    it(`works with each item`, function() {
+      for (let i = 0, l = size; i < l; ++i) {
         const target = cusum[i];
         const message = `target: ${target}`;
         const fn = x => x > target;
 
         assert(cusum.findIndex(fn) === bit.findIndex(fn), message);
-      });
-    }
+      }
+    });
   });
 
-  it("#indexOf", function() {
-    for (let i = 0, l = size; i < l; ++i) {
-      it(`works with each item`, function() {
+  describe("#indexOf", function() {
+    it(`works with each item`, function() {
+      for (let i = 0, l = size; i < l; ++i) {
         const target = cusum[i];
         const message = `target: ${target}`;
 
         assert(cusum.indexOf(target) === bit.indexOf(target), message);
-      });
-    }
+      }
+    });
   });
 
-  it("#lastIndexOf", function() {
-    for (let i = 0, l = size; i < l; ++i) {
-      it(`works with each item`, function() {
+  describe("#lastIndexOf", function() {
+    it(`works with each item`, function() {
+      for (let i = 0, l = size; i < l; ++i) {
         const target = cusum[i];
         const message = `target: ${target}`;
 
         assert(cusum.lastIndexOf(target) === bit.lastIndexOf(target), message);
-      });
-    }
+      }
+    });
   });
 
-  it("#lowerBound, #upperBound", function() {
-    it("each item", function() {
-      for (let i = 0, l = size; i < l; ++i) {
-        it("works", function() {
+  describe("#lowerBound, #upperBound", function() {
+    describe("each item", function() {
+      it("works", function() {
+        for (let i = 0, l = size; i < l; ++i) {
           const target = cusum[i];
           const message = "target: " + target;
           const lb = bit.lowerBound(target);
@@ -142,8 +142,8 @@ function basicTest(ints=[]) {
 
           assert(expected_lb === lb, message);
           assert(expected_ub === ub, message);
-        });
-      }
+        }
+      });
     });
 
     it("too small target", function() {
@@ -170,8 +170,8 @@ function basicTest(ints=[]) {
       assert(ub === size);
     });
 
-    if (2 < size) {
-      it("custom comperator", function() {
+    it("custom comperator", function() {
+      if (2 < size) {
         const comp = (a, b) => a <= b;
         const target = (size / 2) | 0;
 
@@ -182,8 +182,8 @@ function basicTest(ints=[]) {
 
         assert(ub === lb_);
         assert(lb === ub_);
-      });
-    }
+      }
+    });
   });
 
   it("#toArray", () => {

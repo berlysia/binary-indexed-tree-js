@@ -1,6 +1,6 @@
 {
   "name": "binary-indexed-tree",
-  "version": "0.4.1",
+  "version": "0.4.0",
   "description": "Binary Indexed Tree(aka Fenwick Tree) implementation",
   "scripts": {
     "start": "vite",
@@ -15,12 +15,23 @@
       "require": "./dist/index.umd.js"
     }
   },
+  "files": [
+    "lib/"
+  ],
   "author": "berlysia",
   "license": "MIT",
   "devDependencies": {
     "vite": "^2.9.12",
     "vitest": "^0.18.0"
   },
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/berlysia/binary-indexed-tree-js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/berlysia/binary-indexed-tree-js/issues"
+  },
   "packageManager": "yarn@3.2.1",
-  "homepage": "https://github.com/fuzzthink/binary-indexed-tree-js#readme"
+  "homepage": "https://github.com/berlysia/binary-indexed-tree-js#readme"
 }
