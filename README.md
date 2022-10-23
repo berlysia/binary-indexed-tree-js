@@ -178,9 +178,10 @@ Read the [CHANGELOG](https://github.com/berlysia/binary-indexed-tree-js/blob/mas
 
 ## Running tests
 
-Install devDependencies and Run `npm test` or `yarn test`:
-
-    $ npm -d it
+Install devDependencies and Run
+  `npm test`
+  or
+  `yarn test`
 
 ## Contributing
 
