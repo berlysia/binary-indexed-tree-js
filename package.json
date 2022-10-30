@@ -2,11 +2,18 @@
   "name": "binary-indexed-tree",
   "version": "0.4.0",
   "description": "Binary Indexed Tree(aka Fenwick Tree) implementation",
-  "main": "lib/bit.js",
+  "main": "lib/bit.umd.js",
+  "module": "lib/bit.mjs",
+  "exports": {
+    ".": {
+      "import": "./lib/bit.mjs",
+      "require": "./lib/bit.umd.js"
+    }
+  },
   "scripts": {
-    "test": "mocha",
-    "build": "NODE_ENV=production babel src --out-dir lib --source-maps",
-    "watch": "babel src --out-dir lib --watch --source-maps",
+    "test": "vitest",
+    "dev": "vite",
+    "build": "vite build",
     "prepublishOnly": "npm run --if-present changelog && git add CHANGELOG.md && git commit -m 'docs(CHANGELOG): Update' && npm run --if-present doc && npm run --if-present build",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
     "doc": "documentation readme --access undefined src/bit.js --section \"API\""
@@ -17,16 +24,10 @@
   "author": "berlysia",
   "license": "MIT",
   "devDependencies": {
-    "@babel/cli": "7.19.3",
-    "@babel/core": "7.19.6",
-    "@babel/preset-env": "7.19.4",
-    "@babel/register": "7.18.9",
-    "babel-preset-jsdoc-to-assert": "5.0.0",
-    "babel-preset-power-assert": "3.0.0",
     "gh-pages": "2.2.0",
-    "mocha": "7.2.0",
-    "power-assert": "1.6.1",
-    "random-js": "2.1.0"
+    "random-js": "2.1.0",
+    "vite": "^3.2.1",
+    "vitest": "^0.24.3"
   },
   "dependencies": {},
   "repository": {
