@@ -24,7 +24,7 @@
   "author": "berlysia",
   "license": "MIT",
   "devDependencies": {
-    "gh-pages": "2.2.0",
+    "gh-pages": "4.0.0",
     "random-js": "2.1.0",
     "vite": "^3.2.1",
     "vitest": "^0.24.3"
