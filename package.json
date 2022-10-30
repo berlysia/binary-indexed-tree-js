@@ -18,7 +18,7 @@
     "build:vite": "vite build",
     "build:tsc": "tsc --project tsconfig.emit.json",
     "type-check": "tsc",
-    "prepublishOnly": "npm run --if-present changelog && git add CHANGELOG.md && git commit -m 'docs(CHANGELOG): Update' && npm run --if-present doc:commit && npm run --if-present build",
+    "prepublishOnly": "yarn run changelog && git add CHANGELOG.md && git commit -m 'docs(CHANGELOG): Update' && yarn run doc:commit && yarn run build",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
     "doc": "documentation readme --access 'undefined' --section \"API\" src/bit.ts",
     "doc:commit": "yarn run doc && git add README.md && git commit -m 'docs(README): Update'"
