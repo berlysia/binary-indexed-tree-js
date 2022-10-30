@@ -12,7 +12,7 @@ async function main() {
   const isStaged =
     (await $`git diff --staged --exit-code --quiet`.nothrow()).exitCode !== 0;
   if (isStaged) {
-    await $`git commit -m 'docs(CHANGELOG): Update'`;
+    await $`git commit -m 'docs: Update'`;
   } else {
     console.info("no docs are updated");
   }
