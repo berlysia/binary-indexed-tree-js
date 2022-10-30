@@ -1,7 +1,7 @@
 {
   "name": "binary-indexed-tree",
   "type": "module",
-  "version": "0.5.0-alpha.1",
+  "version": "0.5.0",
   "description": "Binary Indexed Tree(aka Fenwick Tree) implementation",
   "main": "lib/bit.umd.cjs",
   "module": "lib/bit.js",
@@ -19,10 +19,10 @@
     "build:vite": "vite build",
     "build:tsc": "tsc --project tsconfig.emit.json",
     "type-check": "tsc",
-    "prepublishOnly": "yarn run changelog && git add CHANGELOG.md && git commit -m 'docs(CHANGELOG): Update' && yarn run doc:commit && yarn run build",
-    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
-    "doc": "documentation readme --access 'undefined' --section \"API\" src/bit.ts",
-    "doc:commit": "yarn run doc && git add README.md && git commit -m 'docs(README): Update'"
+    "prepublishOnly": "yarn run changelog:commit && yarn run doc:commit && yarn run build",
+    "update-docs:changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
+    "update-docs:readme": "documentation readme --access 'undefined' --section \"API\" src/bit.ts",
+    "update-docs:commit": "ts-node-esm --project ./scripts/tsconfig.json ./scripts/update-docs-with-commit.mts"
   },
   "files": [
     "lib/"
@@ -33,9 +33,11 @@
     "conventional-changelog-cli": "^2.2.2",
     "documentation": "^14.0.0",
     "random-js": "2.1.0",
+    "ts-node": "^10.9.1",
     "typescript": "^4.8.4",
     "vite": "^3.2.1",
-    "vitest": "^0.24.3"
+    "vitest": "^0.24.3",
+    "zx": "^7.1.1"
   },
   "dependencies": {},
   "repository": {
