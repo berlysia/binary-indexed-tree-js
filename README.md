@@ -58,6 +58,8 @@ BinaryIndexedTree implementation
 
 #### length
 
+Type: [number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)
+
 Returns **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** size of BIT
 
 #### add
@@ -141,7 +143,7 @@ linear search.
 ##### Parameters
 
 *   `target` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** value
-*   `equal` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)?** equality function
+*   `equal` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)?** equality function (optional, default `defaultEqual`)
 
 Returns **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** index of first target, or -1
 O(N \* log(N))
@@ -153,7 +155,7 @@ linear search.
 ##### Parameters
 
 *   `target` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** value
-*   `equal` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)?** equality function
+*   `equal` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)?** equality function (optional, default `defaultEqual`)
 
 Returns **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** index of last target, or -1
 O(N \* log(N))
@@ -166,7 +168,7 @@ SEQUENCE MUST BE STRICTLY SORTED.
 ##### Parameters
 
 *   `target` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**&#x20;
-*   `comp` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)?**&#x20;
+*   `comp` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)?**  (optional, default `defaultCompare`)
 
 Returns **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** index of lower-bound
 O(log(N))
@@ -179,7 +181,7 @@ SEQUENCE MUST BE STRICTLY SORTED.
 ##### Parameters
 
 *   `target` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**&#x20;
-*   `comp` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)?**&#x20;
+*   `comp` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)?**  (optional, default `defaultCompare`)
 
 Returns **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** index of upper-bound
 O(log(N))
