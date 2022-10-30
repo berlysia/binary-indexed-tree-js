@@ -7,7 +7,7 @@ export type GetInstance<BIT extends BinaryIndexedTreeInstance> = (
   args: InstanceContext
 ) => BIT;
 
-const maxArraySize = 7;
+const arraySize = 64;
 const randomSeed = [75938205, 57102950, 91702362];
 
 export function sequentialInstanceTest<BIT extends BinaryIndexedTreeInstance>(
@@ -19,12 +19,10 @@ export function sequentialInstanceTest<BIT extends BinaryIndexedTreeInstance>(
       instanceTest.bind(null, getInstance, createSequencial(0))
     );
 
-    for (let size = 1, i = 0, l = maxArraySize; i < l; ++i, size *= 2) {
-      describe(
-        `with size = ${size}`,
-        instanceTest.bind(null, getInstance, createSequencial(size))
-      );
-    }
+    describe(
+      `with size = ${arraySize}`,
+      instanceTest.bind(null, getInstance, createSequencial(arraySize))
+    );
   });
 }
 
@@ -33,12 +31,10 @@ export function randomInstanceTest<BIT extends BinaryIndexedTreeInstance>(
 ) {
   describe("random test", function () {
     randomSeed.forEach((seed) => {
-      for (let size = 1, i = 0, l = maxArraySize; i < l; ++i, size *= 2) {
-        describe(
-          `with size = ${size}`,
-          instanceTest.bind(null, getInstance, createRandom(size, seed))
-        );
-      }
+      describe(
+        `with size = ${arraySize}`,
+        instanceTest.bind(null, getInstance, createRandom(arraySize, seed))
+      );
     });
   });
 }
@@ -79,15 +75,21 @@ function instanceTest<BIT extends BinaryIndexedTreeInstance>(
     );
   });
 
-  it("works", function () {
-    for (let i = 0, l = size; i < l; ++i) {
-      expect(bit.get(i)).toBe(cusum[i]);
+  it("#get", function () {
+    // @ts-expect-error
+    console.log(bit._bit);
+    for (let index = 0, l = size; index < l; ++index) {
+      const target = cusum[index];
+      const message = `target: ${target}, index: ${index}`;
+      expect(bit.get(index), message).toBe(target);
     }
   });
 
   it("#original - original values", function () {
-    for (let i = 0, l = size; i < l; ++i) {
-      expect(bit.original(i)).toBe(seed[i]);
+    for (let index = 0, l = size; index < l; ++index) {
+      const target = seed[index];
+      const message = `target: ${target}, index: ${index}`;
+      expect(bit.original(index), message).toBe(target);
     }
   });
 
@@ -97,63 +99,58 @@ function instanceTest<BIT extends BinaryIndexedTreeInstance>(
   });
 
   describe.runIf(size > 0)("#find", function () {
-    it.each(createSequencial(size))(
-      "works with each item with array (length=%i)",
-      function (i) {
-        const target = cusum[i];
-        const message = `target: ${target}`;
+    it("works with each item", function () {
+      for (const index of createSequencial(size)) {
+        const target = cusum[index];
         const fn = (x: number) => x > target;
+        const message = `target: ${target}, index: ${index}`;
 
-        expect(cusum.find(fn), message).toBe(bit.find(fn));
+        expect(bit.find(fn), message).toBe(target);
       }
-    );
+    });
   });
 
   describe.runIf(size > 0)("#findIndex", function () {
-    it.each(createSequencial(size))(
-      "works with each item with array (length=%i)",
-      function (i) {
-        const target = cusum[i];
-        const message = `target: ${target}`;
+    it("works with each item", function () {
+      for (const index of createSequencial(size)) {
+        const target = cusum[index];
+        const message = `target: ${target}, index: ${index}`;
         const fn = (x: number) => x > target;
 
-        expect(cusum.findIndex(fn), message).toBe(bit.findIndex(fn));
+        expect(bit.findIndex(fn), message).toBe(cusum.findIndex(fn));
       }
-    );
+    });
   });
 
   describe.runIf(size > 0)("#indexOf", function () {
-    it.each(createSequencial(size))(
-      "works with each item with array (length=%i)",
-      function (i) {
-        const target = cusum[i];
-        const message = `target: ${target}`;
+    it("works with each item", function () {
+      for (const index of createSequencial(size)) {
+        const target = cusum[index];
+        const message = `target: ${target}, index: ${index}`;
 
-        expect(cusum.indexOf(target), message).toBe(bit.indexOf(target));
+        expect(bit.indexOf(target), message).toBe(cusum.indexOf(target));
       }
-    );
+    });
   });
 
   describe.runIf(size > 0)("#lastIndexOf", function () {
-    it.each(createSequencial(size))(
-      "works with each item with array (length=%i)",
-      function (i) {
-        const target = cusum[i];
-        const message = `target: ${target}`;
+    it("works with each item", function () {
+      for (const index of createSequencial(size)) {
+        const target = cusum[index];
+        const message = `target: ${target}, index: ${index}`;
 
-        expect(cusum.lastIndexOf(target), message).toBe(
-          bit.lastIndexOf(target)
+        expect(bit.lastIndexOf(target), message).toBe(
+          cusum.lastIndexOf(target)
         );
       }
-    );
+    });
   });
 
   describe("#lowerBound, #upperBound", function () {
     describe.runIf(size > 0)("each item", function () {
-      it.each(createSequencial(size))(
-        "works with array (length=%i)",
-        function (i) {
-          const target = cusum[i];
+      it("works", function () {
+        for (const index of createSequencial(size)) {
+          const target = cusum[index];
           const message = "target: " + target;
           const lb = bit.lowerBound(target);
           const ub = bit.upperBound(target);
@@ -161,10 +158,10 @@ function instanceTest<BIT extends BinaryIndexedTreeInstance>(
           const expected_lb = lowerBoundExpected(cusum, (x) => target <= x);
           const expected_ub = lowerBoundExpected(cusum, (x) => target < x);
 
-          expect(expected_lb, message).toBe(lb);
-          expect(expected_ub, message).toBe(ub);
+          expect(lb, message).toBe(expected_lb);
+          expect(ub, message).toBe(expected_ub);
         }
-      );
+      });
     });
 
     it("too small target", function () {
@@ -178,8 +175,8 @@ function instanceTest<BIT extends BinaryIndexedTreeInstance>(
       const expected_lb = lowerBoundExpected(cusum, (x) => target <= x);
       const expected_ub = lowerBoundExpected(cusum, (x) => target < x);
 
-      expect(expected_lb, message).toBe(lb);
-      expect(expected_ub, message).toBe(ub);
+      expect(lb, message).toBe(expected_lb);
+      expect(ub, message).toBe(expected_ub);
     });
 
     it("too large target", function () {
