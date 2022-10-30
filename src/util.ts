@@ -42,3 +42,7 @@ export function lowestCommonAncestor(a: number, b: number): number {
   while (b % 2) b /= 2;
   return a < b ? a : b;
 }
+
+export function buildArray(length: number): number[] {
+  return Array.from({ length }, () => 0);
+}

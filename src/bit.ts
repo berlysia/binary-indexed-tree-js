@@ -8,6 +8,7 @@ import {
   mostSignificantBit,
   leastSignificantBit,
   lowestCommonAncestor,
+  buildArray,
 } from "./util";
 
 type Checker = (
@@ -27,7 +28,7 @@ export default class BinaryIndexedTree {
   _bit: number[];
 
   constructor(size: number) {
-    this._bit = Array(size).fill(0);
+    this._bit = buildArray(size);
   }
 
   /**
@@ -271,7 +272,7 @@ export default class BinaryIndexedTree {
    * O(N)
    */
   toArray(): number[] {
-    const result = Array(this.length).fill(0);
+    const result = buildArray(this.length);
 
     for (let i = 0, l = this.length; i < l; ++i) {
       result[i] = this._bit[i];
