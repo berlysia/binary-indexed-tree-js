@@ -78,7 +78,7 @@ function basicTest(seed: number[]) {
     const built = BIT.build(seed);
 
     for (let i = 0, l = size; i < l; ++i) {
-      expect(bit.get(i)).toBe(built[i]);
+      expect(bit.get(i)).toBe(built.get(i));
     }
   });
 
