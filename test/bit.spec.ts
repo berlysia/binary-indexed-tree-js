@@ -27,19 +27,19 @@ describe("random test", function () {
   });
 });
 
-function lowerBoundExpected(cusum, func) {
+function lowerBoundExpected(cusum: number[], func: (item: number) => boolean) {
   let i = cusum.findIndex(func);
   if (!func(cusum[cusum.length - 1])) return cusum.length;
   return i;
 }
 
-function createSequencial(size) {
+function createSequencial(size: number) {
   const ret = Array(size);
   for (let i = 0; i < size; ++i) ret[i] = i;
   return ret;
 }
 
-function createRandom(size, seed) {
+function createRandom(size: number, seed: number) {
   const ret = Array(size);
   const max = (Number.MAX_SAFE_INTEGER / size) | 0;
   const random = new Random(MersenneTwister19937.seed(seed));
@@ -47,16 +47,16 @@ function createRandom(size, seed) {
   return ret;
 }
 
-function basicTest(seed) {
-  let bit,
-    cusum,
+function basicTest(seed: number[]) {
+  let bit: BIT,
+    cusum: number[],
     size = seed.length;
   beforeEach(function () {
     bit = new BIT(size);
     for (let i = 0, l = size; i < l; ++i) {
       bit.add(i, seed[i]);
     }
-    cusum = seed.reduce(
+    cusum = seed.reduce<number[]>(
       (acc, x, i) => (acc.push(i ? x + acc[i - 1] : x), acc),
       []
     );
@@ -77,7 +77,7 @@ function basicTest(seed) {
   it("build", function () {
     const seq = Array(size)
       .fill(0)
-      .map((x, i) => i);
+      .map((_x, i) => i);
     const built = BIT.build(seq);
 
     for (let i = 0, l = size; i < l; ++i) {
@@ -96,7 +96,7 @@ function basicTest(seed) {
       function (i) {
         const target = cusum[i];
         const message = `target: ${target}`;
-        const fn = (x) => x > target;
+        const fn = (x: number) => x > target;
 
         expect(cusum.find(fn), message).toBe(bit.find(fn));
       }
@@ -109,7 +109,7 @@ function basicTest(seed) {
       function (i) {
         const target = cusum[i];
         const message = `target: ${target}`;
-        const fn = (x) => x > target;
+        const fn = (x: number) => x > target;
 
         expect(cusum.findIndex(fn), message).toBe(bit.findIndex(fn));
       }
@@ -122,7 +122,6 @@ function basicTest(seed) {
       function (i) {
         const target = cusum[i];
         const message = `target: ${target}`;
-        const fn = (x) => x > target;
 
         expect(cusum.indexOf(target), message).toBe(bit.indexOf(target));
       }
@@ -135,7 +134,6 @@ function basicTest(seed) {
       function (i) {
         const target = cusum[i];
         const message = `target: ${target}`;
-        const fn = (x) => x > target;
 
         expect(cusum.lastIndexOf(target), message).toBe(
           bit.lastIndexOf(target)
@@ -188,7 +186,7 @@ function basicTest(seed) {
     });
 
     it.runIf(2 < size)("custom comperator", function () {
-      const comp = (a, b) => a <= b;
+      const comp = (a: number, b: number) => a <= b;
 
       const target = (size / 2) | 0;
 
