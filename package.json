@@ -24,15 +24,7 @@
   "author": "berlysia",
   "license": "MIT",
   "devDependencies": {
-    "@babel/cli": "7.19.3",
-    "@babel/core": "7.19.6",
-    "@babel/preset-env": "7.19.4",
-    "@babel/register": "7.18.9",
-    "babel-preset-jsdoc-to-assert": "5.0.0",
-    "babel-preset-power-assert": "3.0.0",
     "gh-pages": "2.2.0",
-    "mocha": "7.2.0",
-    "power-assert": "1.6.1",
     "random-js": "2.1.0",
     "vite": "^3.2.1",
     "vitest": "^0.24.3"
