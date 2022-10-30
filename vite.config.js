@@ -7,7 +7,7 @@ export default defineConfig({
     outDir: "lib",
     lib: {
       // Could also be a dictionary or array of multiple entry points
-      entry: resolve(__dirname, "src/bit.js"),
+      entry: resolve(__dirname, "src/bit.ts"),
       name: "BinaryIndexedTree",
       // the proper extensions will be added
       fileName: "bit",

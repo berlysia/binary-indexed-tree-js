@@ -1,5 +1,3 @@
-"use strict";
-
 import {
   isOdd,
   _comp,
@@ -9,17 +7,26 @@ import {
   checkPowerOfTwo,
   mostSignificantBit,
   leastSignificantBit,
-  lowestCommonAncestor
+  lowestCommonAncestor,
 } from "./util";
+
+type Checker = (
+  item: number,
+  index: number,
+  self: BinaryIndexedTree
+) => boolean;
+
+type Equality<T> = (a: T, b: T) => boolean;
+
+type Comparator<T> = (a: T, b: T) => boolean;
 
 /**
  * BinaryIndexedTree implementation
  */
 export default class BinaryIndexedTree {
-  /**
-   * @param {number} size
-   */
-  constructor(size) {
+  _bit: number[];
+
+  constructor(size: number) {
     this._bit = Array(size).fill(0);
   }
 
@@ -28,7 +35,7 @@ export default class BinaryIndexedTree {
    * @returns {BinaryIndexedTree} instance
    * O(N)
    */
-  static build(seed) {
+  static build(seed: number[]): BinaryIndexedTree {
     const ret = new BinaryIndexedTree(seed.length);
     for (let i = 0, l = seed.length; i < l; ++i) {
       ret._bit[i] = seed[i];
@@ -45,7 +52,7 @@ export default class BinaryIndexedTree {
   /**
    * @returns {number} size of BIT
    */
-  get length() {
+  get length(): number {
     return this._bit.length;
   }
 
@@ -55,7 +62,7 @@ export default class BinaryIndexedTree {
    * @returns {boolean} successfully added or not
    * O(log(N))
    */
-  add(idx, val) {
+  add(idx: number, val: number): boolean {
     if (!checkRange(idx, this.length)) return false;
     for (let x = idx, l = this.length; x < l; x |= x + 1) {
       this._bit[x] += val;
@@ -69,13 +76,13 @@ export default class BinaryIndexedTree {
    * @returns {boolean} successfully updated or not
    * O(log(N))
    */
-  update(idx, val) {
+  update(idx: number, val: number): boolean {
     if (!checkRange(idx, this.length)) return false;
-    const diff = val - this.original(idx);
+    const diff = val - this.original(idx)!;
     return this.add(idx, diff);
   }
 
-  replace(idx, val) {
+  replace(idx: number, val: number) {
     return this.update(idx, val);
   }
 
@@ -84,7 +91,7 @@ export default class BinaryIndexedTree {
    * @returns {number} original value of array
    * O(log(N))
    */
-  original(idx) {
+  original(idx: number): number | undefined {
     if (!checkRange(idx, this.length)) return undefined;
     if (idx === 0) return this._bit[0];
     let ans = 0;
@@ -103,7 +110,7 @@ export default class BinaryIndexedTree {
    * @returns {number} sum of range [0..idx]
    * O(log(N))
    */
-  get(idx) {
+  get(idx: number): number | undefined {
     if (!checkRange(idx, this.length)) return undefined;
     let ans = 0;
     for (let x = idx; x >= 0; x = (x & (x + 1)) - 1) {
@@ -117,7 +124,7 @@ export default class BinaryIndexedTree {
    * @returns {number} sum of range [0..idx)
    * O(log(N))
    */
-  prefix(idx) {
+  prefix(idx: number): number | undefined {
     if (!checkRange(idx, this.length)) return undefined;
     if (idx === 0) return 0;
     return this.get(idx - 1);
@@ -127,9 +134,9 @@ export default class BinaryIndexedTree {
    * @returns {number} sum of all
    * O(log(N))
    */
-  sum() {
+  sum(): number {
     if (this.length === 0) return 0;
-    return this.get(this.length - 1);
+    return this.get(this.length - 1)!;
   }
 
   /**
@@ -138,14 +145,14 @@ export default class BinaryIndexedTree {
    * @returns {number} value of first target, or undefined
    * O(N * log(N))
    */
-  find(check) {
+  find(check: Checker): number | undefined {
     if (typeof check !== "function") throw new TypeError();
 
     let value = this._bit[0];
     if (check(value, 0, this)) return value;
 
     for (let idx = 1, l = this.length; idx < l; ++idx) {
-      value += this.original(idx);
+      value += this.original(idx)!;
 
       if (check(value, idx, this)) return value;
     }
@@ -159,14 +166,14 @@ export default class BinaryIndexedTree {
    * @returns {number} index of first target, or -1
    * O(N * log(N))
    */
-  findIndex(check) {
+  findIndex(check: Checker): number {
     if (typeof check !== "function") throw new TypeError();
 
     let value = this._bit[0];
     if (check(value, 0, this)) return 0;
 
     for (let idx = 1, l = this.length; idx < l; ++idx) {
-      value += this.original(idx);
+      value += this.original(idx)!;
 
       if (check(value, idx, this)) return idx;
     }
@@ -181,14 +188,12 @@ export default class BinaryIndexedTree {
    * @returns {number} index of first target, or -1
    * O(N * log(N))
    */
-  indexOf(target, equal) {
-    if (typeof equal !== "function") equal = _equal;
-
+  indexOf(target: number, equal: Equality<number> = _equal): number {
     let value = this._bit[0];
     if (equal(value, target)) return 0;
 
     for (let idx = 1, l = this.length; idx < l; ++idx) {
-      value += this.original(idx);
+      value += this.original(idx)!;
 
       if (equal(value, target)) return idx;
     }
@@ -203,14 +208,12 @@ export default class BinaryIndexedTree {
    * @returns {number} index of last target, or -1
    * O(N * log(N))
    */
-  lastIndexOf(target, equal) {
-    if (typeof equal !== "function") equal = _equal;
-
+  lastIndexOf(target: number, equal: Equality<number> = _equal): number {
     let value = this.sum();
     if (equal(value, target)) return this.length - 1;
 
     for (let idx = this.length - 1; 0 < idx; --idx) {
-      value -= this.original(idx);
+      value -= this.original(idx)!;
 
       if (equal(value, target)) return idx - 1;
     }
@@ -226,9 +229,8 @@ export default class BinaryIndexedTree {
    * @returns {number} index of lower-bound
    * O(log(N))
    */
-  lowerBound(target, comp) {
+  lowerBound(target: number, comp: Comparator<number> = _comp): number {
     const length = this.length;
-    if (typeof comp !== "function") comp = _comp;
 
     let ans = 0,
       x = mostSignificantBit(length) * 2;
@@ -254,8 +256,7 @@ export default class BinaryIndexedTree {
    * @returns {number} index of upper-bound
    * O(log(N))
    */
-  upperBound(target, comp) {
-    if (typeof comp !== "function") comp = _comp;
+  upperBound(target: number, comp: Comparator<number> = _comp): number {
     return this.lowerBound(target, _wrap(comp));
   }
 
@@ -263,7 +264,7 @@ export default class BinaryIndexedTree {
    * @returns {Array<number>} array of cusum
    * O(N)
    */
-  toArray() {
+  toArray(): number[] {
     const result = Array(this.length).fill(0);
 
     for (let i = 0, l = this.length; i < l; ++i) {
