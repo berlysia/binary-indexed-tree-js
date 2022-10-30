@@ -77,7 +77,9 @@ function basicTest(seed: number[]) {
   it("build", function () {
     const built = BIT.build(seed);
 
-    expect(built._bit).toEqual(bit._bit);
+    for (let i = 0, l = size; i < l; ++i) {
+      expect(bit.get(i)).toBe(built[i]);
+    }
   });
 
   it("access out of range returns undefined", function () {
