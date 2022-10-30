@@ -19,7 +19,7 @@
     "build:vite": "vite build",
     "build:tsc": "tsc --project tsconfig.emit.json",
     "type-check": "tsc",
-    "prepublishOnly": "yarn run changelog:commit && yarn run doc:commit && yarn run build",
+    "prepublishOnly": "update-docs:commit && yarn run build",
     "update-docs:changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
     "update-docs:readme": "documentation readme --access 'undefined' --section \"API\" src/bit.ts",
     "update-docs:commit": "ts-node-esm --project ./scripts/tsconfig.json ./scripts/update-docs-with-commit.mts"
