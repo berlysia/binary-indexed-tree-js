@@ -1,4 +1,8 @@
-# [0.5.0-alpha.1](https://github.com/berlysia/binary-indexed-tree-js/compare/0.4.0...0.5.0-alpha.1) (2022-10-30)
+# [0.5.0-alpha.3](https://github.com/berlysia/binary-indexed-tree-js/compare/v0.5.0-alpha.1...v0.5.0-alpha.3) (2022-10-30)
+
+
+
+# [0.5.0-alpha.1](https://github.com/berlysia/binary-indexed-tree-js/compare/0.4.0...v0.5.0-alpha.1) (2022-10-30)
 
 
 ### Bug Fixes
