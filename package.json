@@ -11,7 +11,7 @@
     }
   },
   "scripts": {
-    "test": "mocha",
+    "test": "vitest",
     "dev": "vite",
     "build": "vite build",
     "prepublishOnly": "npm run --if-present changelog && git add CHANGELOG.md && git commit -m 'docs(CHANGELOG): Update' && npm run --if-present doc && npm run --if-present build",
