@@ -2,11 +2,18 @@
   "name": "binary-indexed-tree",
   "version": "0.4.0",
   "description": "Binary Indexed Tree(aka Fenwick Tree) implementation",
-  "main": "lib/bit.js",
+  "main": "lib/bit.umd.js",
+  "module": "lib/bit.mjs",
+  "exports": {
+    ".": {
+      "import": "./lib/bit.mjs",
+      "require": "./lib/bit.umd.js"
+    }
+  },
   "scripts": {
     "test": "mocha",
-    "build": "NODE_ENV=production babel src --out-dir lib --source-maps",
-    "watch": "babel src --out-dir lib --watch --source-maps",
+    "dev": "vite",
+    "build": "vite build",
     "prepublishOnly": "npm run --if-present changelog && git add CHANGELOG.md && git commit -m 'docs(CHANGELOG): Update' && npm run --if-present doc && npm run --if-present build",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
     "doc": "documentation readme --access undefined src/bit.js --section \"API\""
