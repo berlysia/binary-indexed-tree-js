@@ -6,7 +6,8 @@
     "declaration": true,
     "declarationMap": true,
     "declarationDir": "./lib",
-    "rootDir": "./src"
+    "rootDir": "./src",
+    "composite": false
   },
   "include": ["./src"]
 }
