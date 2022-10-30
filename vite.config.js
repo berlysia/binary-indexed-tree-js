@@ -12,5 +12,6 @@ export default defineConfig({
       // the proper extensions will be added
       fileName: "bit",
     },
+    sourcemap: true,
   },
 });
