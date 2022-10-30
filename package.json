@@ -18,7 +18,7 @@
     "build": "yarn run build:vite && yarn run build:tsc",
     "build:vite": "vite build",
     "build:tsc": "tsc --project tsconfig.emit.json",
-    "type-check": "tsc",
+    "type-check": "tsc --noEmit",
     "prepublishOnly": "yarn run update-docs:commit && yarn run build",
     "update-docs:changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
     "update-docs:readme": "documentation readme --access 'undefined' --section \"API\" src/bit.ts",
