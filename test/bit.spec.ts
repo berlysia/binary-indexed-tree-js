@@ -75,14 +75,9 @@ function basicTest(seed: number[]) {
   });
 
   it("build", function () {
-    const seq = Array(size)
-      .fill(0)
-      .map((_x, i) => i);
-    const built = BIT.build(seq);
+    const built = BIT.build(seed);
 
-    for (let i = 0, l = size; i < l; ++i) {
-      expect(bit.get(i)).toBe(cusum[i]);
-    }
+    expect(built._bit).toEqual(bit._bit);
   });
 
   it("access out of range returns undefined", function () {
