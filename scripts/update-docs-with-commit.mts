@@ -4,10 +4,9 @@ import { $ } from "zx";
 
 async function main() {
   // stage is clean
-  const isClean =
-    (await $`git diff --name-only --exit-code --quiet`.nothrow()).exitCode ===
-    0;
-  if (!isClean) {
+  const isCleanBefore =
+    (await $`git diff --exit-code --quiet`.nothrow()).exitCode === 0;
+  if (!isCleanBefore) {
     throw new Error("stage is not clean");
   }
   await Promise.all([
@@ -16,10 +15,11 @@ async function main() {
   ]);
   await $`git add CHANGELOG.md README.md`;
 
-  const isDirty =
-    (await $`git diff --name-only --exit-code --quiet`.nothrow()).exitCode !==
-    0;
-  if (isDirty) {
+  const isCleanAfter =
+    (await $`git diff --exit-code --quiet`.nothrow()).exitCode === 0;
+  const isStaged =
+    (await $`git diff --staged --exit-code --quiet`.nothrow()).exitCode !== 0;
+  if (isCleanAfter && isStaged) {
     await $`git commit -m 'docs(CHANGELOG): Update'`;
   } else {
     console.info("no docs are updated");
