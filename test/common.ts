@@ -1,31 +1,47 @@
 import { Random, MersenneTwister19937 } from "random-js";
 import { describe, beforeEach, it, expect } from "vitest";
-import BIT from "../src/bit";
+import { BinaryIndexedTreeInstance } from "../src/types";
+
+type InstanceContext = { size: number };
+export type GetInstance<BIT extends BinaryIndexedTreeInstance> = (
+  args: InstanceContext
+) => BIT;
 
 const maxArraySize = 7;
 const randomSeed = [75938205, 57102950, 91702362];
 
-describe("sequencial test", function () {
-  describe(`with size = 0`, basicTest.bind(null, createSequencial(0)));
-
-  for (let size = 1, i = 0, l = maxArraySize; i < l; ++i, size *= 2) {
+export function sequentialInstanceTest<BIT extends BinaryIndexedTreeInstance>(
+  getInstance: GetInstance<BIT>
+) {
+  describe("sequencial test", function () {
     describe(
-      `with size = ${size}`,
-      basicTest.bind(null, createSequencial(size))
+      `with size = 0`,
+      instanceTest.bind(null, getInstance, createSequencial(0))
     );
-  }
-});
 
-describe("random test", function () {
-  randomSeed.forEach((seed) => {
     for (let size = 1, i = 0, l = maxArraySize; i < l; ++i, size *= 2) {
       describe(
         `with size = ${size}`,
-        basicTest.bind(null, createRandom(size, seed))
+        instanceTest.bind(null, getInstance, createSequencial(size))
       );
     }
   });
-});
+}
+
+export function randomInstanceTest<BIT extends BinaryIndexedTreeInstance>(
+  getInstance: GetInstance<BIT>
+) {
+  describe("random test", function () {
+    randomSeed.forEach((seed) => {
+      for (let size = 1, i = 0, l = maxArraySize; i < l; ++i, size *= 2) {
+        describe(
+          `with size = ${size}`,
+          instanceTest.bind(null, getInstance, createRandom(size, seed))
+        );
+      }
+    });
+  });
+}
 
 function lowerBoundExpected(cusum: number[], func: (item: number) => boolean) {
   let i = cusum.findIndex(func);
@@ -33,26 +49,27 @@ function lowerBoundExpected(cusum: number[], func: (item: number) => boolean) {
   return i;
 }
 
-function createSequencial(size: number) {
+export function createSequencial(size: number) {
   const ret = Array(size);
   for (let i = 0; i < size; ++i) ret[i] = i;
   return ret;
 }
 
-function createRandom(size: number, seed: number) {
-  const ret = Array(size);
+export function createRandom(size: number, seed: number): number[] {
   const max = (Number.MAX_SAFE_INTEGER / size) | 0;
   const random = new Random(MersenneTwister19937.seed(seed));
-  for (let i = 0; i < size; ++i) ret[i] = random.integer(0, max);
-  return ret;
+  return Array.from({ length: size }, () => random.integer(0, max));
 }
 
-function basicTest(seed: number[]) {
+function instanceTest<BIT extends BinaryIndexedTreeInstance>(
+  getInstance: (args: InstanceContext) => BIT,
+  seed: number[]
+) {
   let bit: BIT,
     cusum: number[],
     size = seed.length;
   beforeEach(function () {
-    bit = new BIT(size);
+    bit = getInstance({ size });
     for (let i = 0, l = size; i < l; ++i) {
       bit.add(i, seed[i]);
     }
@@ -71,14 +88,6 @@ function basicTest(seed: number[]) {
   it("#original - original values", function () {
     for (let i = 0, l = size; i < l; ++i) {
       expect(bit.original(i)).toBe(seed[i]);
-    }
-  });
-
-  it("build", function () {
-    const built = BIT.build(seed);
-
-    for (let i = 0, l = size; i < l; ++i) {
-      expect(bit.get(i)).toBe(built.get(i));
     }
   });
 

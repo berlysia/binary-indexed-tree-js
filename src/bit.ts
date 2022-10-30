@@ -1,4 +1,10 @@
 import {
+  BinaryIndexedTreeInstance,
+  Checker,
+  Comparator,
+  Equality,
+} from "./types";
+import {
   isOdd,
   defaultCompare,
   defaultEqual,
@@ -11,20 +17,10 @@ import {
   buildArray,
 } from "./util";
 
-type Checker = (
-  item: number,
-  index: number,
-  self: BinaryIndexedTree
-) => boolean;
-
-type Equality<T> = (a: T, b: T) => boolean;
-
-type Comparator<T> = (a: T, b: T) => boolean;
-
 /**
  * BinaryIndexedTree implementation
  */
-export default class BinaryIndexedTree {
+export default class BinaryIndexedTree implements BinaryIndexedTreeInstance {
   private _bit: number[];
 
   constructor(size: number) {
@@ -146,7 +142,7 @@ export default class BinaryIndexedTree {
    * @returns {number} value of first target, or undefined
    * O(N * log(N))
    */
-  find(check: Checker): number | undefined {
+  find(check: Checker<BinaryIndexedTree>): number | undefined {
     if (typeof check !== "function") throw new TypeError();
 
     let value = this._bit[0];
