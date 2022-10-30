@@ -20,7 +20,7 @@ export const checkRange = (x: number, end: number): boolean => {
 
 export const checkPowerOfTwo = (num: number): boolean => {
   if (num === 0) return false;
-  return (num & (num - 1)) === 0;
+  return !(num & (num - 1));
 };
 
 export const mostSignificantBit = (num: number): number => {
