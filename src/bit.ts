@@ -25,7 +25,7 @@ type Comparator<T> = (a: T, b: T) => boolean;
  * BinaryIndexedTree implementation
  */
 export default class BinaryIndexedTree {
-  _bit: number[];
+  private _bit: number[];
 
   constructor(size: number) {
     this._bit = buildArray(size);
