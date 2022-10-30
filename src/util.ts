@@ -2,15 +2,15 @@ export function isOdd(num: number) {
   return num & 1;
 }
 
-export function _comp(a: number, b: number): boolean {
+export function defaultCompare(a: number, b: number): boolean {
   return a < b;
 }
 
-export function _equal(a: number, b: number): boolean {
+export function defaultEqual(a: number, b: number): boolean {
   return a === b;
 }
 
-export function _wrap<T>(fn: (a: T, b: T) => boolean) {
+export function negate<T>(fn: (a: T, b: T) => boolean) {
   return (a: T, b: T) => !fn(b, a);
 }
 

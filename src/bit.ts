@@ -1,8 +1,8 @@
 import {
   isOdd,
-  _comp,
-  _equal,
-  _wrap,
+  defaultCompare,
+  defaultEqual,
+  negate,
   checkRange,
   checkPowerOfTwo,
   mostSignificantBit,
@@ -188,7 +188,7 @@ export default class BinaryIndexedTree {
    * @returns {number} index of first target, or -1
    * O(N * log(N))
    */
-  indexOf(target: number, equal: Equality<number> = _equal): number {
+  indexOf(target: number, equal: Equality<number> = defaultEqual): number {
     let value = this._bit[0];
     if (equal(value, target)) return 0;
 
@@ -208,7 +208,7 @@ export default class BinaryIndexedTree {
    * @returns {number} index of last target, or -1
    * O(N * log(N))
    */
-  lastIndexOf(target: number, equal: Equality<number> = _equal): number {
+  lastIndexOf(target: number, equal: Equality<number> = defaultEqual): number {
     let value = this.sum();
     if (equal(value, target)) return this.length - 1;
 
@@ -229,7 +229,10 @@ export default class BinaryIndexedTree {
    * @returns {number} index of lower-bound
    * O(log(N))
    */
-  lowerBound(target: number, comp: Comparator<number> = _comp): number {
+  lowerBound(
+    target: number,
+    comp: Comparator<number> = defaultCompare
+  ): number {
     const length = this.length;
 
     let ans = 0,
@@ -256,8 +259,11 @@ export default class BinaryIndexedTree {
    * @returns {number} index of upper-bound
    * O(log(N))
    */
-  upperBound(target: number, comp: Comparator<number> = _comp): number {
-    return this.lowerBound(target, _wrap(comp));
+  upperBound(
+    target: number,
+    comp: Comparator<number> = defaultCompare
+  ): number {
+    return this.lowerBound(target, negate(comp));
   }
 
   /**
