@@ -456,7 +456,7 @@ JSONStream@^1.0.4:
     jsonparse "^1.2.0"
     through ">=2.2.7 <3"
 
-acorn-walk@^8.1.1:
+acorn-walk@^8.1.1, acorn-walk@^8.2.0:
   version "8.2.0"
   resolved "https://registry.yarnpkg.com/acorn-walk/-/acorn-walk-8.2.0.tgz#741210f2e2426454508853a2f44d0ab83b7f69c1"
   integrity sha512-k+iyHEuPgSw6SbuDpGQM+06HQUa04DZ3o+F6CSzXMvvI5KMvnaEqXe+YVe555R9nn6GPt404fos4wcgpw12SDA==
@@ -3363,17 +3363,20 @@ vite@^3.0.0, vite@^3.2.1:
   optionalDependencies:
     fsevents "~2.3.2"
 
-vitest@^0.24.3:
-  version "0.24.4"
-  resolved "https://registry.yarnpkg.com/vitest/-/vitest-0.24.4.tgz#ec6d876a000d9942b0bc0bbc54d54da38a879720"
-  integrity sha512-4ratHSyVEJPtBLV00uhL4Wj3Pmandc9rsxUkE0q9peNOfaOgGF4lEepdkaXGRi9AGFKr1GRVtjGOJ6Fp2lCpEg==
+vitest@^0.25.0:
+  version "0.25.1"
+  resolved "https://registry.yarnpkg.com/vitest/-/vitest-0.25.1.tgz#4eafca68fabab22b6099451ab3fcaac33290a4ed"
+  integrity sha512-eH74h6MkuEgsqR4mAQZeMK9O0PROiKY+i+1GMz/fBi5A3L2ml5U7JQs7LfPU7+uWUziZyLHagl+rkyfR8SLhlA==
   dependencies:
     "@types/chai" "^4.3.3"
     "@types/chai-subset" "^1.3.3"
     "@types/node" "*"
+    acorn "^8.8.0"
+    acorn-walk "^8.2.0"
     chai "^4.3.6"
     debug "^4.3.4"
     local-pkg "^0.4.2"
+    source-map "^0.6.1"
     strip-literal "^0.4.2"
     tinybench "^2.3.1"
     tinypool "^0.3.0"
