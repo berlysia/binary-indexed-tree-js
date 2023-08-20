@@ -30,7 +30,7 @@
   "author": "berlysia",
   "license": "MIT",
   "devDependencies": {
-    "conventional-changelog-cli": "^2.2.2",
+    "conventional-changelog-cli": "^3.0.0",
     "documentation": "^14.0.0",
     "random-js": "2.1.0",
     "ts-node": "^10.9.1",
