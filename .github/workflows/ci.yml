@@ -27,7 +27,7 @@ jobs:
           access_token: ${{ github.token }}
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v5
         with:
           node-version: ${{ matrix.node-version }}
           cache: "yarn"
