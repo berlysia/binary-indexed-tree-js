@@ -3,7 +3,7 @@
   "type": "module",
   "version": "0.5.0",
   "description": "Binary Indexed Tree(aka Fenwick Tree) implementation",
-  "packageManager": "pnpm@10.16.0",
+  "packageManager": "pnpm@10.17.1",
   "main": "lib/bit.umd.cjs",
   "module": "lib/bit.js",
   "types": "lib/bit.d.ts",
