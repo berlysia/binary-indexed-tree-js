@@ -3,6 +3,7 @@
   "type": "module",
   "version": "0.5.0",
   "description": "Binary Indexed Tree(aka Fenwick Tree) implementation",
+  "packageManager": "pnpm@10.17.1",
   "main": "lib/bit.umd.cjs",
   "module": "lib/bit.js",
   "types": "lib/bit.d.ts",
@@ -15,11 +16,11 @@
   "scripts": {
     "test": "vitest",
     "dev": "vite",
-    "build": "yarn run build:vite && yarn run build:tsc",
+    "build": "pnpm run build:vite && pnpm run build:tsc",
     "build:vite": "vite build",
     "build:tsc": "tsc --project tsconfig.emit.json",
     "type-check": "tsc --noEmit",
-    "prepublishOnly": "yarn run update-docs:commit && yarn run build",
+    "prepublishOnly": "pnpm run update-docs:commit && pnpm run build",
     "update-docs:changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
     "update-docs:readme": "documentation readme --access 'undefined' --section \"API\" src/bit.ts",
     "update-docs:commit": "ts-node-esm --project ./scripts/tsconfig.json ./scripts/update-docs-with-commit.mts"
@@ -30,16 +31,15 @@
   "author": "berlysia",
   "license": "MIT",
   "devDependencies": {
-    "conventional-changelog-cli": "^2.2.2",
-    "documentation": "^14.0.0",
+    "conventional-changelog-cli": "5.0.0",
+    "documentation": "14.0.3",
     "random-js": "2.1.0",
-    "ts-node": "^10.9.1",
-    "typescript": "^4.8.4",
-    "vite": "^3.2.1",
-    "vitest": "^0.34.0",
-    "zx": "^7.1.1"
+    "ts-node": "10.9.2",
+    "typescript": "5.9.3",
+    "vite": "7.1.8",
+    "vitest": "3.2.4",
+    "zx": "8.8.4"
   },
-  "dependencies": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/berlysia/binary-indexed-tree-js.git"

@@ -31,6 +31,10 @@ build/Release
 # https://docs.npmjs.com/misc/faq#should-i-check-my-node-modules-folder-into-git
 node_modules
 
+# pnpm
+.pnpm-store/
+.pnpm-debug.log*
+
 
 ### https://raw.github.com/github/gitignore/92fe23112d1863d526651434169928ea0b61b853/Global/OSX.gitignore
 
