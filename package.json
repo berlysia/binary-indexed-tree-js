@@ -37,7 +37,7 @@
     "ts-node": "10.9.2",
     "typescript": "5.9.3",
     "vite": "7.3.3",
-    "vitest": "3.2.4",
+    "vitest": "4.1.7",
     "zx": "8.8.5"
   },
   "repository": {
